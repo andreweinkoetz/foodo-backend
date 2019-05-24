@@ -1,14 +1,13 @@
-# express-oauth2-skeleton
+# Foodo backend
 
 ## What is this repository for?
 
-This repository provides a skeleton api that you can fork to quick-start your own express app! 
-
-Find the corresponding react-oauth2-skeleton (here)[https://github.com/andrelandgraf/react-oauth2-skeleton]. 
+This repository provides the backend functionality for our student project in Future Business Labs (IN2106, IN2128, IN212807) at TUM.
+Find the corresponding react-app (here)[https://github.com/andrelandgraf/react-oauth2-skeleton]. 
 
 ## Getting started
 
-This repository is set-up for unix systems only. Some scripts will not work on Windows, so it is storngly recommended that you work with this repository on a unix machine (Mac, VM, Linux).
+This repository is set-up for unix systems only. Some scripts will not work on Windows, so it is strongly recommended that you work with this repository on a unix machine (Mac, VM, Linux).
 
 ### IDE / Editor
 
@@ -27,7 +26,7 @@ Install all third party dependencies. Below you can find a small summary of the 
 - `express`
 - ~~`express-oauth-server`~~ replaced by `oauth2-server` (no further development for express wrapper)
 - `dotenv` - to quickly read secret variables from .env files via `process.env.VAR_NAME`
-- `body-parser` 
+- `body-parser`
 - `crons` - express middleware to allow cross-domain-requests
 
 ### setup .env
@@ -71,7 +70,7 @@ For testing the examples please make sure you have `curl` installed on your mach
 
 ###### Obtaining a new token:
 ```
-curl http://localhost:3000/oauth/token \
+curl http://localhost:3333/oauth/token \
 	-d "grant_type=password" \
 	-d "username=<username>" \
 	-d "password=<verysecret>" \
@@ -85,15 +84,14 @@ Should result in something like this:
 "accessTokenExpiresAt":"2019-05 20T11:22:34.292Z", 
 "refreshToken":"47780f03558fa30d9d90872a1082795bd8693c67",
 "refreshTokenExpiresAt":"2019-06-03T10:22:34.294Z", 
-"client":{"id":"alexa"}, 
-"user": {"id":"id3009","email":"<email-address>"}
+"client": <Your client object>, 
+"user": <Your user object>
 }
 ```
 
 ###### Using token to authenticate:
 ```
-curl http://localhost:3000/secret \
+curl http://localhost:3333/auth/me \
 	-H "Authorization: Bearer 4ca38497aa7e75b4b144933e6eaf744925b23831"
 ```
-To receive this:
-`Congrats you are in secret area`
+To receive your user object.
