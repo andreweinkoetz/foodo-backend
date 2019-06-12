@@ -1,16 +1,17 @@
 {
-  "name": "express-oauth2-skeleton",
+  "name": "foodo-backend",
   "version": "1.0.0",
-  "description": "A express.js oauth2 skeleton app that has you covered with all basic oauth functionality!",
+  "description": "The backend repository for the food taxonomy project 'foodo'. This is a project of five TUM students of the course: Future Business Labs (IN2106, IN2128, IN212807)",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "dev": "node index",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/andrelandgraf/express-oauth2-skeleton.git"
+    "url": "git+https://github.com/tum-aweink/foodo-backend.git"
   },
   "keywords": [
     "OAuth",
@@ -22,9 +23,9 @@
   "author": "Andre Landgraf and Andre Weinkötz",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/andrelandgraf/express-oauth2-skeleton/issues"
+    "url": "https://github.com/tum-aweink/foodo-backend/issues"
   },
-  "homepage": "https://github.com/andrelandgraf/express-oauth2-skeleton#readme",
+  "homepage": "https://github.com/tum-aweink/foodo-backend#readme",
   "dependencies": {
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",

@@ -2,30 +2,25 @@ const mongoose = require( 'mongoose' );
 
 const { Schema } = mongoose;
 
-const TokenSchema = new Schema( {
-    accessToken: {
+const CodeSchema = new Schema( {
+    authorizationCode: {
         type: String,
         required: true,
         unique: true,
     },
-    accessTokenExpiresAt: {
+    expiresAt: {
         type: Date,
         required: true,
     },
-    refreshToken: {
+    redirectUri: {
         type: String,
-        required: true,
-        unique: true,
-    },
-    refreshTokenExpiresAt: {
-        type: Date,
         required: true,
     },
     client: { type: Schema.Types.ObjectId, ref: 'Client' },
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-}, { collection: 'token' } );
+}, { collection: 'code' } );
 
-TokenSchema.set( 'versionKey', false );
+CodeSchema.set( 'versionKey', false );
 
 // Export the Movie model
-module.exports = mongoose.model( 'Token', TokenSchema );
+module.exports = mongoose.model( 'Code', CodeSchema );

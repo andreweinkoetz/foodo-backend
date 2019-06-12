@@ -1,13 +1,14 @@
-# Foodo backend
+# express-oauth2-skeleton
 
 ## What is this repository for?
 
-This repository provides the backend functionality for our student project in Future Business Labs (IN2106, IN2128, IN212807) at TUM.
-Find the corresponding react-app (here)[https://github.com/andrelandgraf/react-oauth2-skeleton]. 
+This repository provides a skeleton api that you can fork to quick-start your own express app! 
+
+Find the corresponding react-oauth2-skeleton (here)[https://github.com/andrelandgraf/react-oauth2-skeleton]. 
 
 ## Getting started
 
-This repository is set-up for unix systems only. Some scripts will not work on Windows, so it is strongly recommended that you work with this repository on a unix machine (Mac, VM, Linux).
+This repository is set-up for unix systems only. Some scripts will not work on Windows, so it is storngly recommended that you work with this repository on a unix machine (Mac, VM, Linux).
 
 ### IDE / Editor
 
@@ -26,7 +27,7 @@ Install all third party dependencies. Below you can find a small summary of the 
 - `express`
 - ~~`express-oauth-server`~~ replaced by `oauth2-server` (no further development for express wrapper)
 - `dotenv` - to quickly read secret variables from .env files via `process.env.VAR_NAME`
-- `body-parser`
+- `body-parser` 
 - `crons` - express middleware to allow cross-domain-requests
 
 ### setup .env
@@ -95,3 +96,14 @@ curl http://localhost:3333/auth/me \
 	-H "Authorization: Bearer 4ca38497aa7e75b4b144933e6eaf744925b23831"
 ```
 To receive your user object.
+
+## AWS Elastic Beanstalk deployment
+In order to deploy to AWS EB make sure to have a `.npmrc` file in the root folder of the project. This is necessary for `bcrypt`: [see here](https://github.com/kelektiv/node.bcrypt.js/wiki/Installation-Instructions) for details.
+Content of file:
+```
+# Force npm to run node-gyp also as root, preventing permission denied errors in AWS with npm@5 or @6
+unsafe-perm=true
+
+```
+The folder `.ebextensions` contains the node command to start up the application on AWS EB. Will be removed after forking.
+

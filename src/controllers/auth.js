@@ -1,6 +1,6 @@
 const bcrypt = require( 'bcrypt' );
 
-const { obtainToken } = require( '../middlewares' );
+const { obtainToken, authorize } = require( '../middlewares' );
 const {
     missingProperties,
     sendBadRequestErrorMissingProperty,
@@ -41,6 +41,7 @@ const me = ( req, res ) => {
 
 module.exports = {
     obtainToken,
+    authorize,
     register,
     me,
 };
