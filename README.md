@@ -1,10 +1,10 @@
-# express-oauth2-skeleton
+# Foodo backend
 
 ## What is this repository for?
 
 This repository provides a skeleton api that you can fork to quick-start your own express app! 
 
-Find the corresponding react-oauth2-skeleton (here)[https://github.com/andrelandgraf/react-oauth2-skeleton]. 
+Find the corresponding react frontend [here](https://github.com/andrelandgraf/foodo-frontend). 
 
 ## Getting started
 
@@ -36,7 +36,7 @@ Create a new file called `.env` and copy the template from `EXAMPLE.env`. Ask yo
 
 ### `npm run lint`
 
-We use eslint to verify that we are all on the same page when it comes to code formatting. Use `npm run lint` to check if you pass all linting requirements. For a detailled description how to setup eslint, please see the react-oauth2-skeleton repository (README.md)[https://github.com/andrelandgraf/react-oauth2-skeleton/master/README.md]
+We use eslint to verify that we are all on the same page when it comes to code formatting. Use `npm run lint` to check if you pass all linting requirements. For a detailled description how to setup eslint, please see the react-oauth2-skeleton repository [README.md](https://github.com/andrelandgraf/react-oauth2-skeleton/master/README.md)
 
 ### `npm run dev`
 
