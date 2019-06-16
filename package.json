@@ -34,7 +34,8 @@
     "express": "^4.17.0",
     "lodash": "^4.17.11",
     "mongoose": "^5.5.10",
-    "oauth2-server": "^3.0.1"
+    "oauth2-server": "^3.0.1",
+    "string-similarity": "^3.0.0"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
