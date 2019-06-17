@@ -18,9 +18,16 @@ const UserSchema = new Schema( {
         required: true,
         unique: true,
     },
+    locale: {
+        type: String,
+        required: true,
+    },
+    allergies: [ { type: Schema.Types.ObjectId, ref: 'Allergy' } ],
+    lifestyle: { type: Schema.Types.ObjectId, ref: 'Lifestyle' },
+    dislikes: [ { type: Schema.Types.ObjectId, ref: 'Ingredient' } ],
+    goal: { type: Schema.Types.ObjectId, ref: 'Goal' },
 }, { collection: 'user' } );
 
 UserSchema.set( 'versionKey', false );
 
-// Export the Movie model
 module.exports = mongoose.model( 'User', UserSchema );

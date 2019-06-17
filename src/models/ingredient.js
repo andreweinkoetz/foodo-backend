@@ -8,14 +8,16 @@ const IngredientSchema = new Schema( {
         required: true,
     },
     name: {
-        type: String,
-        required: true,
-        unique: true,
+        en: {
+            type: String,
+            required: true,
+        },
+        de: {
+            type: String,
+            required: true,
+        },
     },
-    foodGroup: {
-        type: String,
-        required: true,
-    },
+    category: { type: Schema.Types.ObjectId, ref: 'Category' },
     elements: {
         Cholesterol: {
             type: Number,
@@ -166,12 +168,9 @@ const IngredientSchema = new Schema( {
                 required: true,
             },
         },
-    notForAllergy: {
-        type: [ String ],
-    },
-    notForLifestyles: {
-        type: [ String ],
-    },
+    notForAllergy: [ { type: Schema.Types.ObjectId, ref: 'Allergy' } ],
+    notForLifestyles: [ { type: Schema.Types.ObjectId, ref: 'Lifestyle' } ],
+
 }, { collection: 'ingredient' } );
 
 IngredientSchema.set( 'versionKey', false );
