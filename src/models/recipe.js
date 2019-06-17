@@ -42,7 +42,6 @@ const RecipeSchema = new Schema( {
         } ],
     imgUrl: {
         type: String,
-        required: true,
     },
 }, { collection: 'recipe' } );
 
