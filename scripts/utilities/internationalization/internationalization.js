@@ -7,8 +7,6 @@
  * !!!!!!!!! CAUTION  !!!!!!!!!
  * This script utilizes the Google Cloud Translation API which can become quite expensive
  * Please use this script with caution and only translate less than 500.000 characters per month!
- * Print yourself the "translationsDone" after you are done
- * and add the value to ESTIMATED_CHARS_USED
  */
 
 // Imports the Google Cloud client library
@@ -27,10 +25,7 @@ const LOCALES = [
     'de',
 ];
 
-let translationsDone = 0;
 const translateTextTo = async ( text, from, to ) => {
-    translationsDone += text.length;
-
     if ( !LOCALES.includes( to ) || !LOCALES.includes( from ) ) {
         throw Error( 'target/base language not supported for Foodo' );
     }
@@ -39,20 +34,7 @@ const translateTextTo = async ( text, from, to ) => {
     return translations;
 };
 
-// eslint-disable-next-line no-unused-vars
-const testTranslation = async ( text, from, to ) => {
-    const translated = await translateTextTo( text, from, to );
-    // eslint-disable-next-line no-console
-    console.log( `Text: ${ text }` );
-    // eslint-disable-next-line no-console
-    console.log( `Translation: ${ translated }` );
-};
-
-testTranslation( 'Hello World', 'en', 'de' );
-console.log( translationsDone );
-
 module.exports = {
     LOCALES,
     translateTextTo,
-    translationsDone,
 };
