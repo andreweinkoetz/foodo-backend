@@ -12,6 +12,7 @@
         "array-bracket-spacing": [ 2, "always" ],
         "object-curly-spacing": [ 2, "always" ],
         "computed-property-spacing": [ 2, "always" ],
-        "space-infix-ops": [2, {"int32Hint": false}]
+        "space-infix-ops": [ 2, {"int32Hint": false} ],
+        "no-underscore-dangle": [ "error", { "allow": [ "_id" ] } ]
       }
 }
