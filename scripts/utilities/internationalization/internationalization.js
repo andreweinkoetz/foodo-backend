@@ -10,6 +10,7 @@
  */
 
 // Imports the Google Cloud client library
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { Translate } = require( '@google-cloud/translate' );
 const dotenv = require( 'dotenv' );
 
