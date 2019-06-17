@@ -42,6 +42,7 @@ const RecipeSchema = new Schema( {
         } ],
     imgUrl: {
         type: String,
+        default: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2000px-No_image_available.svg.png',
     },
 }, { collection: 'recipe' } );
 
