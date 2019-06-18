@@ -18,11 +18,12 @@ const changePassword = async ( req, res ) => {
 
 const register = async ( req, res ) => {
     const { body } = req;
-    const missingProp = missingProperties( body, [ 'username', 'password' ] );
+    const { user } = body;
+    const missingProp = missingProperties( user, [ 'username', 'password', 'locale' ] );
     if ( missingProp ) {
         return sendBadRequestErrorMissingProperty( res, missingProp );
     }
-    const { username, password } = body;
+    const { username, password, locale } = user;
     const hashedPassword = bcrypt.hashSync( password, 8 );
 
     const existingUser = await UserModel.findOne( { username } ).exec();
@@ -31,10 +32,11 @@ const register = async ( req, res ) => {
     const registeringUser = {
         id: username,
         username,
+        locale,
         password: hashedPassword,
     };
     return UserModel.create( registeringUser )
-        .then( user => res.status( 200 ).json( user ) );
+        .then( savedUser => res.status( 200 ).json( savedUser ) );
 };
 
 module.exports = {
