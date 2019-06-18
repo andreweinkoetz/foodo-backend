@@ -1,4 +1,6 @@
+const lodash = require( 'lodash' );
 const UserModel = require( '../models/user' );
+const PersonalizedRecipeModel = require( '../models/personalizedRecipe' );
 const TokenModel = require( '../models/token' );
 
 const setGoal = ( req, res ) => UserModel
@@ -34,6 +36,38 @@ const me = ( req, res ) => {
         .then( token => res.status( 200 ).json( token.user ) );
 };
 
+const updatePersonalizedRecipe = ( req, res ) => {
+    const updateRecipe = lodash.cloneDeep( req.body.recipe );
+    return PersonalizedRecipeModel
+        .findByIdAndUpdate( { _id: req.params.id }, updateRecipe, { new: true } )
+        .then( persRecipe => res.status( 200 ).json( persRecipe ) );
+};
+
+const insertPersonalizedRecipe = ( req, res ) => {
+    const insertRecipe = lodash.cloneDeep( req.body.recipe );
+    return PersonalizedRecipeModel
+        .create( insertRecipe )
+        .then( persRecipe => res.status( 200 ).json( persRecipe ) );
+};
+
+const getRecipesOfUser = ( req, res ) => PersonalizedRecipeModel
+    .find( { user: req.params.id } )
+    .populate( 'origRecipe' )
+    .populate( 'ingredients' )
+    // .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
+    // .populate( { path: 'blockedSubstitutions', populate: { path: 'blockedSubs' } } )
+    // disabled due to performance improvement ->
+    // if we need this we should check which populations do make sense
+    .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
+
+const getSingleRecipeOfUser = ( req, res ) => PersonalizedRecipeModel
+    .findById( { _id: req.params.id } )
+    .populate( 'origRecipe' )
+    .populate( 'ingredients' )
+    .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
+    .populate( { path: 'blockedSubstitutions', populate: { path: 'blockedSubs' } } )
+    .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
+
 module.exports = {
     setGoal,
     setLifestyle,
@@ -41,4 +75,9 @@ module.exports = {
     setAllergies,
     setLocale,
     me,
+    updatePersonalizedRecipe,
+    insertPersonalizedRecipe,
+    getRecipesOfUser,
+    getSingleRecipeOfUser,
+
 };
