@@ -11,6 +11,7 @@ const diceCo = require('string-similarity');
 const lodash = require('lodash');
 const ingredientController = require('../src/controllers/ingredient');
 const mongoose = require('mongoose');
+const int = require('./utilities/internationalization/internationalization');
 require('dotenv').config();
 
 // Prepare input data
@@ -93,8 +94,20 @@ recipes.map( ( r ) => {
 
 mongoose.connect( process.env.MONGODB_URI, { useNewUrlParser: true } ).then( () => {
     mongoose.connection.db.dropCollection('ingredient', (err, result) => console.log(err, result));
+    let count = 0;
     // Adding to database
-    ingredientController.insertIngredientBatch(ingredientArray).then(()=> mongoose.disconnect());
+    ingredientController.insertIngredientBatch(ingredientArray).then((res)=> {
+        res.map((ingredient) => {
+           const name = ingredient.name.de;
+           delete ingredient.name;
+           int.translateTextTo(name,'de','en').then((translation) => {
+               count++;
+               ingredient.name = {de: name, en: translation};
+               console.log(`Translated ${name} to ${translation} #${count}`);
+               ingredient.save();
+           })
+        });
+    });
 } ).catch((err) => console.log(err));
 
 
