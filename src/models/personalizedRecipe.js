@@ -22,7 +22,7 @@ const PersonalizedRecipeSchema = new Schema( {
         } ],
 
     },
-}, { collection: 'userRecipe' } );
+}, { collection: 'personalizedRecipe' } );
 
 PersonalizedRecipeSchema.set( 'versionKey', false );
 
