@@ -13,6 +13,26 @@ const setLifestyle = ( req, res ) => UserModel
     .select( '-password' )
     .then( user => res.status( 200 ).json( user ) );
 
+const addDislike = ( req, res ) => UserModel
+    .findById( { _id: req.body.userId } )
+    .populate( 'dislikes' )
+    .then( ( user ) => {
+        user.dislikes.push( req.body.dislike );
+        user.save();
+        return res.status( 200 ).json( { msg: 'Successfully added dislike' } );
+    } );
+
+const deleteDislike = ( req, res ) => UserModel
+    .findById( { _id: req.body.userId } )
+    .populate( 'dislikes' )
+    .then( ( user ) => {
+        const changeUser = user;
+        changeUser.dislikes = user.dislikes
+            .filter( dislike => dislike._id !== req.body.dislike._id );
+        changeUser.save();
+        return res.status( 200 ).json( { msg: 'Successfully added allergy' } );
+    } );
+
 const setDislikes = ( req, res ) => UserModel
     .findByIdAndUpdate( { _id: req.body.userId }, { dislikes: req.body.dislikes }, { new: true } )
     .select( '-password' )
@@ -22,6 +42,26 @@ const setAllergies = ( req, res ) => UserModel
     .findByIdAndUpdate( { _id: req.body.userId }, { allergies: req.body.allergies }, { new: true } )
     .select( '-password' )
     .then( user => res.status( 200 ).json( user ) );
+
+const addAllergy = ( req, res ) => UserModel
+    .findById( { _id: req.body.userId } )
+    .populate( 'allergies' )
+    .then( ( user ) => {
+        user.allergies.push( req.body.allergy );
+        user.save();
+        return res.status( 200 ).json( { msg: 'Successfully added allergy' } );
+    } );
+
+const deleteAllergy = ( req, res ) => UserModel
+    .findById( { _id: req.body.userId } )
+    .populate( 'allergies' )
+    .then( ( user ) => {
+        const changeUser = user;
+        changeUser.allergies = user.allergies
+            .filter( allergy => allergy._id !== req.body.allergy._id );
+        changeUser.save();
+        return res.status( 200 ).json( { msg: 'Successfully added allergy' } );
+    } );
 
 const setLocale = ( req, res ) => UserModel
     .findByIdAndUpdate( { _id: req.body.userId }, { locale: req.body.allergies }, { new: true } )
@@ -83,5 +123,8 @@ module.exports = {
     insertPersonalizedRecipe,
     getRecipesOfUser,
     getSingleRecipeOfUser,
-
+    addDislike,
+    addAllergy,
+    deleteAllergy,
+    deleteDislike,
 };
