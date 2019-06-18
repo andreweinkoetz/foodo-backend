@@ -4,23 +4,28 @@ const PersonalizedRecipeModel = require( '../models/personalizedRecipe' );
 const TokenModel = require( '../models/token' );
 
 const setGoal = ( req, res ) => UserModel
-    .findByIdAndUpdate( { _id: req.params.id }, { goal: req.body.goal }, { new: true } )
+    .findByIdAndUpdate( { _id: req.body.userId }, { goal: req.body.goal }, { new: true } )
+    .select( '-password' )
     .then( user => res.status( 200 ).json( user ) );
 
 const setLifestyle = ( req, res ) => UserModel
-    .findByIdAndUpdate( { _id: req.params.id }, { lifestyle: req.body.lifestyle }, { new: true } )
+    .findByIdAndUpdate( { _id: req.body.userId }, { lifestyle: req.body.lifestyle }, { new: true } )
+    .select( '-password' )
     .then( user => res.status( 200 ).json( user ) );
 
 const setDislikes = ( req, res ) => UserModel
-    .findByIdAndUpdate( { _id: req.params.id }, { dislikes: req.body.dislikes }, { new: true } )
+    .findByIdAndUpdate( { _id: req.body.userId }, { dislikes: req.body.dislikes }, { new: true } )
+    .select( '-password' )
     .then( user => res.status( 200 ).json( user ) );
 
 const setAllergies = ( req, res ) => UserModel
-    .findByIdAndUpdate( { _id: req.params.id }, { allergies: req.body.allergies }, { new: true } )
+    .findByIdAndUpdate( { _id: req.body.userId }, { allergies: req.body.allergies }, { new: true } )
+    .select( '-password' )
     .then( user => res.status( 200 ).json( user ) );
 
 const setLocale = ( req, res ) => UserModel
-    .findByIdAndUpdate( { _id: req.params.id }, { locale: req.body.allergies }, { new: true } )
+    .findByIdAndUpdate( { _id: req.body.userId }, { locale: req.body.allergies }, { new: true } )
+    .select( '-password' )
     .then( user => res.status( 200 ).json( user ) );
 
 const me = ( req, res ) => {
@@ -33,6 +38,7 @@ const me = ( req, res ) => {
         .populate( { path: 'user', populate: { path: 'goal' } } )
         .populate( { path: 'user', populate: { path: 'lifestyle' } } )
         .populate( { path: 'user', populate: { path: 'allergies' } } )
+        .select( '-password' )
         .then( token => res.status( 200 ).json( token.user ) );
 };
 
@@ -55,10 +61,6 @@ const getRecipesOfUser = ( req, res ) => {
         .find( { user: req.body.userId } )
         .populate( 'origRecipe' )
         .populate( 'ingredients' )
-    // .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
-    // .populate( { path: 'blockedSubstitutions', populate: { path: 'blockedSubs' } } )
-    // disabled due to performance improvement ->
-    // if we need this we should check which populations do make sense
         .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
 };
 
