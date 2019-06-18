@@ -26,4 +26,4 @@ const PersonalizedRecipeSchema = new Schema( {
 
 PersonalizedRecipeSchema.set( 'versionKey', false );
 
-module.exports = mongoose.model( 'User', PersonalizedRecipeSchema );
+module.exports = mongoose.model( 'PersonalizedRecipe', PersonalizedRecipeSchema );

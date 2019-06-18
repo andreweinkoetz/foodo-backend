@@ -12,4 +12,9 @@ router.post( '/:id/dislikes', UserController.setDislikes );
 router.post( '/:id/locale', UserController.setLocale );
 router.get( '/me', checkAuthentication, UserController.me );
 
+router.put( '/recipe', UserController.updatePersonalizedRecipe );
+router.post( '/recipe', UserController.insertPersonalizedRecipe );
+router.get( '/recipe', checkAuthentication, UserController.getRecipesOfUser );
+router.get( '/recipe/:id', UserController.getSingleRecipeOfUser );
+
 module.exports = router;
