@@ -31,17 +31,8 @@ const register = async ( req, res ) => {
         .then( user => res.status( 200 ).json( user ) );
 };
 
-const me = ( req, res ) => {
-    const { accessToken } = req.body.token.token;
-
-    return TokenModel
-        .findOne( { accessToken } ).populate( 'user' )
-        .then( token => res.status( 200 ).json( token.user ) );
-};
-
 module.exports = {
     obtainToken,
     authorize,
     register,
-    me,
 };
