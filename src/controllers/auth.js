@@ -7,8 +7,14 @@ const {
     sendBadRequestErrorUsernameTaken,
 } = require( './utilities/error' );
 const UserModel = require( '../models/user' );
-const TokenModel = require( '../models/token' );
 
+const changePassword = async ( req, res ) => {
+    const { password, userId } = req.body;
+    const hashedPassword = bcrypt.hashSync( password, 8 );
+    return UserModel
+        .findByIdAndUpdate( { _id: userId }, { password: hashedPassword } )
+        .then( () => res.status( 200 ).json( { msg: 'Password updated successfully' } ) );
+};
 
 const register = async ( req, res ) => {
     const { body } = req;
@@ -35,4 +41,5 @@ module.exports = {
     obtainToken,
     authorize,
     register,
+    changePassword,
 };
