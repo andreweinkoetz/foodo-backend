@@ -14,7 +14,7 @@ router.get( '/me', checkAuthentication, UserController.me );
 
 router.put( '/recipe', UserController.updatePersonalizedRecipe );
 router.post( '/recipe', UserController.insertPersonalizedRecipe );
-router.get( '/recipe', UserController.getRecipesOfUser );
+router.get( '/recipe', checkAuthentication, UserController.getRecipesOfUser );
 router.get( '/recipe/:id', UserController.getSingleRecipeOfUser );
 
 module.exports = router;

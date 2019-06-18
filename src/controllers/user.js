@@ -50,15 +50,17 @@ const insertPersonalizedRecipe = ( req, res ) => {
         .then( persRecipe => res.status( 200 ).json( persRecipe ) );
 };
 
-const getRecipesOfUser = ( req, res ) => PersonalizedRecipeModel
-    .find( { user: req.params.id } )
-    .populate( 'origRecipe' )
-    .populate( 'ingredients' )
+const getRecipesOfUser = ( req, res ) => {
+    PersonalizedRecipeModel
+        .find( { user: req.body.userId } )
+        .populate( 'origRecipe' )
+        .populate( 'ingredients' )
     // .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
     // .populate( { path: 'blockedSubstitutions', populate: { path: 'blockedSubs' } } )
     // disabled due to performance improvement ->
     // if we need this we should check which populations do make sense
-    .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
+        .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
+};
 
 const getSingleRecipeOfUser = ( req, res ) => PersonalizedRecipeModel
     .findById( { _id: req.params.id } )

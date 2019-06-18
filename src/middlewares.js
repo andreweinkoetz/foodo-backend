@@ -28,7 +28,6 @@ const obtainToken = ( req, res ) => {
 
     return app.oauth.token( request, response )
         .then( ( token ) => {
-            console.log( token );
             res.json( token );
         } ).catch( ( err ) => {
             res.status( err.code || 500 ).json( err );
@@ -56,6 +55,7 @@ const checkAuthentication = ( req, res, next ) => {
             req.body.token = {
                 token,
             };
+            req.body.userId = token.user._id;
             next();
         } ).catch( ( err ) => {
             res.status( err.code || 500 ).json( err );
