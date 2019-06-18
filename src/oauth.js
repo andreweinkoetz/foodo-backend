@@ -24,7 +24,13 @@ const convertTokenAlexa = async ( token ) => {
 const getUser = async ( username, password ) => {
     console.log( 'getUser-function called' );
 
-    const user = await UserModel.findOne( { username } ).exec();
+    const user = await UserModel
+        .findOne( { username } )
+        .populate( 'dislikes' )
+        .populate( 'goal' )
+        .populate( 'lifestyle' )
+        .populate( 'allergies' )
+        .exec();
     const validPassword = user && bcrypt.compareSync( password, user.password );
     user.password = undefined;
     return validPassword ? user : undefined;
