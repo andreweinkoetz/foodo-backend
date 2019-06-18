@@ -41,6 +41,10 @@ const convertFields = (ig) => {
         return null;
     };
 
+    const nameDE = lodash.cloneDeep(igInsert.name);
+    delete igInsert.name;
+    igInsert.name = { de: nameDE, en: nameDE};
+
     return igInsert;
 
 };
@@ -71,7 +75,7 @@ const convertAmounts = (ig) => {
 * based on Sørensen–Dice coefficient: https://en.wikipedia.org/wiki/Sørensen-Dice_coefficient
 * e.g. console.log(diceCo.compareTwoStrings('1 el frische vollmilch', '1 l haltbare milch')); >> 0.25
 */
-const evalIg = (name) => ingredientArray.some((ig) => diceCo.compareTwoStrings(ig.name.toLowerCase(), name.toLowerCase()) > 0.33);
+const evalIg = (name) => ingredientArray.some((ig) => diceCo.compareTwoStrings(ig.name.de.toLowerCase(), name.toLowerCase()) > 0.33);
 
 // Iterating all recipes an extracting the ingredients
 recipes.map( ( r ) => {
@@ -91,7 +95,7 @@ mongoose.connect( process.env.MONGODB_URI, { useNewUrlParser: true } ).then( () 
     mongoose.connection.db.dropCollection('ingredient', (err, result) => console.log(err, result));
     // Adding to database
     ingredientController.insertIngredientBatch(ingredientArray).then(()=> mongoose.disconnect());
-} );
+} ).catch((err) => console.log(err));
 
 
 
