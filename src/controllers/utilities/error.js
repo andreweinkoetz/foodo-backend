@@ -1,4 +1,11 @@
 /**
+ * Constants for usage in error message handling.
+ */
+const USER_NOT_FOUND = "Cannot set property 'password' of null";
+const PASSWORD_WRONG = 'Invalid grant: user credentials are invalid';
+
+
+/**
  * @param {object} body
  * @param {string} property
  * @returns {boolean}
@@ -40,9 +47,32 @@ const sendBadRequestErrorUsernameTaken = ( res, username ) => res.status( 400 )
         message: `The ${ username } is already taken`,
     } );
 
+const sendBadRequestPasswordEmpty = res => res.status( 404 )
+    .json( {
+        error: 'Bad Request',
+        message: 'The password-field must be set.',
+    } );
+
+const generateAndSendErrorMessage = ( res, err ) => {
+    if ( err.message === USER_NOT_FOUND ) {
+        res.status( 404 ).json( {
+            error: 'Bad Request',
+            message: 'User does not exist.',
+        } );
+    }
+    if ( err.message === PASSWORD_WRONG ) {
+        res.status( 400 ).json( {
+            error: 'Bad Request',
+            message: 'Password wrong.',
+        } );
+    }
+};
+
 module.exports = {
     missesProperty,
     missingProperties,
     sendBadRequestErrorMissingProperty,
     sendBadRequestErrorUsernameTaken,
+    sendBadRequestPasswordEmpty,
+    generateAndSendErrorMessage,
 };

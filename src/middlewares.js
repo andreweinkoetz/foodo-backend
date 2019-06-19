@@ -4,6 +4,7 @@ const bodyParser = require( 'body-parser' );
 const OAuth2Server = require( 'oauth2-server' );
 const cors = require( 'cors' );
 const oauthModel = require( './oauth' );
+const error = require( './controllers/utilities/error' );
 
 const { Request, Response } = OAuth2Server;
 
@@ -26,18 +27,21 @@ const obtainToken = ( req, res ) => {
     const request = new Request( req );
     const response = new Response( res );
 
+    if ( req.body.password === null || req.body.password === '' ) {
+        error.sendBadRequestPasswordEmpty( res );
+    }
+
     return app.oauth.token( request, response )
         .then( ( token ) => {
             res.json( token );
         } ).catch( ( err ) => {
-            res.status( err.code || 500 ).json( err );
+            error.generateAndSendErrorMessage( res, err );
         } );
 };
 
 const authorize = ( req, res ) => {
     const request = new Request( req );
     const response = new Response( res );
-
     return app.oauth.authorize( request, response ).then( ( token ) => {
         res.json( token );
     } ).catch( ( err ) => {
