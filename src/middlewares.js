@@ -56,6 +56,7 @@ const checkAuthentication = ( req, res, next ) => {
                 token,
             };
             req.body.userId = token.user._id;
+            req.body.clientId = token.client._id;
             next();
         } ).catch( ( err ) => {
             res.status( err.code || 500 ).json( err );
