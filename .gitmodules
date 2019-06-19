@@ -1,0 +1,3 @@
+[submodule "src/algorithm"]
+	path = src/algorithm
+	url = https://github.com/MrMuchacho/foodo_substitutions.git

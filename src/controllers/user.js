@@ -64,7 +64,7 @@ const deleteAllergy = ( req, res ) => UserModel
     } );
 
 const setLocale = ( req, res ) => UserModel
-    .findByIdAndUpdate( { _id: req.body.userId }, { locale: req.body.allergies }, { new: true } )
+    .findByIdAndUpdate( { _id: req.body.userId }, { locale: req.body.locale }, { new: true } )
     .select( '-password' )
     .then( user => res.status( 200 ).json( user ) );
 
