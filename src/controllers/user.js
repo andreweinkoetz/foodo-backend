@@ -90,6 +90,7 @@ const insertPersonalizedRecipe = ( req, res ) => {
     };
     PersonalizedRecipeModel
         .create( personalizedRecipe )
+        .populate( 'personalizedRecipe.ingredients.ingredient' )
         .then( persRecipe => res.status( 200 ).json( persRecipe ) );
 };
 
