@@ -8,6 +8,7 @@ const recipes = require( './src/routes/recipe' );
 const ingredients = require( './src/routes/ingredient' );
 const user = require( './src/routes/user' );
 const profile = require( './src/routes/profile' );
+const logger = require( './src/logger' ).getLogger( 'index' );
 
 // SECTION: Misc.
 if ( !process.env.IS_PROD ) {
@@ -15,6 +16,7 @@ if ( !process.env.IS_PROD ) {
 }
 
 mongoose.set( 'useCreateIndex', true );
+mongoose.set( 'useFindAndModify', false );
 
 // SECTION: route config
 app.get( '/', ( req, res ) => res.send( 'Foodo backend received HTTP GET method' ) );
@@ -29,6 +31,6 @@ mongoose.connect( process.env.MONGODB_URI, { useNewUrlParser: true } ).then( () 
     cache.initCache().then( () => {
         // Start server
         app.listen( process.env.PORT,
-            () => console.log( `${ new Date() }: Express backend listening on port ${ process.env.PORT }!` ) );
+            () => logger.info( `Express backend listening on port ${ process.env.PORT }!` ) );
     } );
 } );
