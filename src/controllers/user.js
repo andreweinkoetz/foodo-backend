@@ -82,18 +82,14 @@ const me = ( req, res ) => {
         .then( token => res.status( 200 ).json( token.user ) );
 };
 
-const updatePersonalizedRecipe = ( req, res ) => {
-    const updateRecipe = lodash.cloneDeep( req.body.recipe );
-    return PersonalizedRecipeModel
-        .findByIdAndUpdate( { _id: req.params.id },
-            { personalizedRecipe: updateRecipe }, { new: true } )
-        .then( persRecipe => res.status( 200 ).json( persRecipe ) );
-};
-
 const insertPersonalizedRecipe = ( req, res ) => {
-    const insertRecipe = lodash.cloneDeep( req.body.recipe );
-    return PersonalizedRecipeModel
-        .create( insertRecipe )
+    const personalizedRecipe = {
+        user: req.body.userId,
+        client: req.body.clientId,
+        personalizedRecipe: req.body.personalizedRecipe,
+    };
+    PersonalizedRecipeModel
+        .create( personalizedRecipe )
         .then( persRecipe => res.status( 200 ).json( persRecipe ) );
 };
 
@@ -122,7 +118,6 @@ module.exports = {
     setAllergies,
     setLocale,
     me,
-    updatePersonalizedRecipe,
     insertPersonalizedRecipe,
     getRecipesOfUser,
     getSingleRecipeOfUser,

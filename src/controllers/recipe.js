@@ -1,5 +1,7 @@
 const lodash = require( 'lodash' );
 const RecipeModel = require( '../models/recipe' );
+const PersonalizedRecipeModel = require( '../models/personalizedRecipe' );
+const substitutor = require( '../algorithm/substitutor' );
 
 const getAllRecipes = ( req, res ) => RecipeModel
     .find( {} ).then( recipes => res.status( 200 ).json( recipes ) );
@@ -14,8 +16,24 @@ const insertRecipe = ( req, res ) => {
     RecipeModel.create( newRecipe ).then( recipe => res.status( 200 ).json( recipe ) );
 };
 
+const substituteIngredients = ( req, res ) => {
+    const persRecipeId = req.params.id;
+    PersonalizedRecipeModel.findById( persRecipeId )
+        .populate( 'user' )
+        .populate( 'client' )
+        .populate( 'personalizedRecipe.origRecipe' )
+        .populate( 'personalizedRecipe.ingredients.ingredient' )
+        .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
+        .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
+        .then( ( persRecipe ) => {
+            const result = substitutor.calculateSubstitutions( persRecipe );
+            res.status( 200 ).json( result );
+        } );
+};
+
 module.exports = {
     getAllRecipes,
     getRecipeById,
     insertRecipe,
+    substituteIngredients,
 };

@@ -16,7 +16,6 @@ router.delete( '/dislikes', checkAuthentication, UserController.deleteDislike );
 router.post( '/locale', checkAuthentication, UserController.setLocale );
 router.get( '/me', checkAuthentication, UserController.me );
 
-router.put( '/recipes', checkAuthentication, UserController.updatePersonalizedRecipe );
 router.post( '/recipes', checkAuthentication, UserController.insertPersonalizedRecipe );
 router.get( '/recipes', checkAuthentication, UserController.getRecipesOfUser );
 router.get( '/recipes/:id', checkAuthentication, UserController.getSingleRecipeOfUser );
