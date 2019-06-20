@@ -17,7 +17,7 @@ if ( !process.env.IS_PROD ) {
 mongoose.set( 'useCreateIndex', true );
 
 // SECTION: route config
-app.get( '/', ( req, res ) => res.send( 'Received a GET HTTP method' ) );
+app.get( '/', ( req, res ) => res.send( 'Foodo backend received HTTP GET method' ) );
 app.use( '/auth', auth );
 app.use( '/recipe', recipes );
 app.use( '/ingredient', ingredients );

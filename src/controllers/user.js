@@ -30,7 +30,7 @@ const deleteDislike = ( req, res ) => UserModel
         changeUser.dislikes = user.dislikes
             .filter( dislike => dislike._id.toString() !== req.body.dislike._id );
         changeUser.save();
-        return res.status( 200 ).json( { msg: 'Successfully added allergy' } );
+        return res.status( 200 ).json( { msg: 'Successfully removed dislike' } );
     } );
 
 const setDislikes = ( req, res ) => UserModel
@@ -60,7 +60,7 @@ const deleteAllergy = ( req, res ) => UserModel
         changeUser.allergies = user.allergies
             .filter( allergy => allergy._id.toString() !== req.body.allergy._id );
         changeUser.save();
-        return res.status( 200 ).json( { msg: 'Successfully added allergy' } );
+        return res.status( 200 ).json( { msg: 'Successfully removed allergy' } );
     } );
 
 const setLocale = ( req, res ) => UserModel
@@ -85,7 +85,8 @@ const me = ( req, res ) => {
 const updatePersonalizedRecipe = ( req, res ) => {
     const updateRecipe = lodash.cloneDeep( req.body.recipe );
     return PersonalizedRecipeModel
-        .findByIdAndUpdate( { _id: req.params.id }, updateRecipe, { new: true } )
+        .findByIdAndUpdate( { _id: req.params.id },
+            { personalizedRecipe: updateRecipe }, { new: true } )
         .then( persRecipe => res.status( 200 ).json( persRecipe ) );
 };
 
