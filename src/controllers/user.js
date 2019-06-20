@@ -28,7 +28,7 @@ const deleteDislike = ( req, res ) => UserModel
     .then( ( user ) => {
         const changeUser = user;
         changeUser.dislikes = user.dislikes
-            .filter( dislike => dislike._id !== req.body.dislike._id );
+            .filter( dislike => dislike._id.toString() !== req.body.dislike._id );
         changeUser.save();
         return res.status( 200 ).json( { msg: 'Successfully added allergy' } );
     } );
@@ -58,7 +58,7 @@ const deleteAllergy = ( req, res ) => UserModel
     .then( ( user ) => {
         const changeUser = user;
         changeUser.allergies = user.allergies
-            .filter( allergy => allergy._id !== req.body.allergy._id );
+            .filter( allergy => allergy._id.toString() !== req.body.allergy._id );
         changeUser.save();
         return res.status( 200 ).json( { msg: 'Successfully added allergy' } );
     } );
