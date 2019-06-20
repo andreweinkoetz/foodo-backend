@@ -2,6 +2,7 @@
 
 # dependencies / npm
 node_modules/
+src/algorithm
 package-lock.json
 *.log
 *.gz

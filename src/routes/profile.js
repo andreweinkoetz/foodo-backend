@@ -4,9 +4,9 @@ const cache = require( '../controllers/utilities/cache' );
 const router = express.Router();
 // const { checkAuthentication } = require( '../middlewares' );
 
-router.get( '/allergy', cache.getAllergies );
-router.get( '/category', cache.getCategories );
-router.get( '/lifestyle', cache.getLifestyles );
-router.get( '/goal', cache.getGoals );
+router.get( '/allergies', cache.getAllergies );
+router.get( '/categories', cache.getCategories );
+router.get( '/lifestyles', cache.getLifestyles );
+router.get( '/goals', cache.getGoals );
 
 module.exports = router;

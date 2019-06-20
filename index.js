@@ -19,8 +19,8 @@ mongoose.set( 'useCreateIndex', true );
 // SECTION: route config
 app.get( '/', ( req, res ) => res.send( 'Foodo backend received HTTP GET method' ) );
 app.use( '/auth', auth );
-app.use( '/recipe', recipes );
-app.use( '/ingredient', ingredients );
+app.use( '/recipes', recipes );
+app.use( '/ingredients', ingredients );
 app.use( '/user', user );
 app.use( '', profile );
 
