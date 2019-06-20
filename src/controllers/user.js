@@ -103,7 +103,7 @@ const getRecipesOfUser = ( req, res ) => {
 };
 
 const getSingleRecipeOfUser = ( req, res ) => PersonalizedRecipeModel
-    .find( { personalizedRecipe: { origRecipe: req.params.id }, user: req.body.userId } )
+    .find( { 'personalizedRecipe.origRecipe': req.params.id, user: req.body.userId } )
     .populate( 'origRecipe' )
     .populate( 'ingredients' )
     .populate( 'client' )
