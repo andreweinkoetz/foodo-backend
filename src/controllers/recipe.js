@@ -26,8 +26,8 @@ const substituteIngredients = ( req, res ) => {
         .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
         .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
         .then( ( persRecipe ) => {
-            const result = substitutor.calculateSubstitutions( persRecipe );
-            res.status( 200 ).json( result );
+            // const result = substitutor.calculateSubstitutions( persRecipe );
+            res.status( 200 ).json( persRecipe.ingredients );
         } );
 };
 
