@@ -1,7 +1,7 @@
 const lodash = require( 'lodash' );
 const RecipeModel = require( '../models/recipe' );
 const PersonalizedRecipeModel = require( '../models/personalizedRecipe' );
-const substitutor = require( '../algorithm/substitutor' );
+// const substitutor = require( '../algorithm/substitutor' );
 
 const getAllRecipes = ( req, res ) => RecipeModel
     .find( {} ).then( recipes => res.status( 200 ).json( recipes ) );

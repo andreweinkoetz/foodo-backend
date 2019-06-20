@@ -90,8 +90,15 @@ const insertPersonalizedRecipe = ( req, res ) => {
     };
     PersonalizedRecipeModel
         .create( personalizedRecipe )
-        .populate( 'personalizedRecipe.ingredients.ingredient' )
-        .then( persRecipe => res.status( 200 ).json( persRecipe ) );
+        .then( ( persRecipe ) => {
+            PersonalizedRecipeModel.findById( persRecipe._id )
+                .populate( 'origRecipe' )
+                .populate( 'personalizedRecipe.ingredients.ingredient' )
+                .populate( 'client' )
+                .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
+                .populate( { path: 'blockedSubstitutions', populate: { path: 'blockedSubs' } } )
+                .then( popPersRecipe => res.status( 200 ).json( popPersRecipe ) );
+        } );
 };
 
 const getRecipesOfUser = ( req, res ) => {
