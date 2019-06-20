@@ -92,7 +92,8 @@ const insertPersonalizedRecipe = ( req, res ) => {
         .create( personalizedRecipe )
         .then( ( persRecipe ) => {
             PersonalizedRecipeModel.findById( persRecipe._id )
-                .populate( 'origRecipe' )
+                .populate( 'personalizedRecipe.origRecipe' )
+                .populate( 'personalizedRecipe.origRecipe.ingredients.ingredient' )
                 .populate( 'personalizedRecipe.ingredients.ingredient' )
                 .populate( 'client' )
                 .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
@@ -112,7 +113,8 @@ const getRecipesOfUser = ( req, res ) => {
 
 const getSingleRecipeOfUser = ( req, res ) => PersonalizedRecipeModel
     .findOne( { 'personalizedRecipe.origRecipe': req.params.id, user: req.body.userId } )
-    .populate( 'origRecipe' )
+    .populate( 'personalizedRecipe.origRecipe' )
+    .populate( 'personalizedRecipe.origRecipe.ingredients.ingredient' )
     .populate( 'personalizedRecipe.ingredients.ingredient' )
     .populate( 'client' )
     .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
