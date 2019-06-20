@@ -1,101 +1,96 @@
 # Foodo backend
 
-## What is this repository for?
-
-This repository provides a skeleton api that you can fork to quick-start your own express app! 
-
-Find the corresponding react frontend [here](https://github.com/andrelandgraf/foodo-frontend). 
-
 ## Getting started
 
-This repository is set-up for unix systems only. Some scripts will not work on Windows, so it is storngly recommended that you work with this repository on a unix machine (Mac, VM, Linux).
+This repository is set-up for unix systems only. Some scripts will not work on Windows, so it is storngly recommended that you work with this repository on a unix machine.
 
-### IDE / Editor
+### `npm install`
 
-Get yourself VSCode for a quick start. On Linux just run: `snap install code`. Other IDEs e.g. Webstorm work fine as well, just make sure that you have nice git and eslint support within your editor for more convenience.
-
-For VSCode, we can recommend following extensions:
-
-- eslint: A package that will show you all eslint linting errors within your code. Make sure to activate the checkbox "Auto fix on save" to ensure that all auto linting fixes will be fixed on every file save
-
-### `npm install``
-
-Install all third party dependencies. Below you can find a small summary of the most important packages that we use and a small description for why we need them. See `package.json` for more information.
-
-#### Packages used:
-
-- `express`
-- ~~`express-oauth-server`~~ replaced by `oauth2-server` (no further development for express wrapper)
-- `dotenv` - to quickly read secret variables from .env files via `process.env.VAR_NAME`
-- `body-parser` 
-- `crons` - express middleware to allow cross-domain-requests
+Install all third party dependencies. See `package.json` for more information.
 
 ### setup .env
 
 Create a new file called `.env` and copy the template from `EXAMPLE.env`. Ask your co-contributors for the secrets and save them to your .env file. Please make sure that you keep the .env file private and do not share the information in the file with anyone. Do not add `.env` to git! 
 
-### `npm run lint`
-
-We use eslint to verify that we are all on the same page when it comes to code formatting. Use `npm run lint` to check if you pass all linting requirements. For a detailled description how to setup eslint, please see the react-oauth2-skeleton repository [README.md](https://github.com/andrelandgraf/react-oauth2-skeleton/master/README.md)
-
 ### `npm run dev`
 
 This will start the development server on localhost. Please make sure that you have set the Port within the `.env` file. e.g. `PORT=3333`
 
-## Usage of OAuth2
+## API endpoint usage
+In this part you will find information on how to use the backend-api. This will be replaced by `swagger-ui` endpoint documentation in future releases.
+The following endpoints have been implemented:
 
-We use OAuth2 specs to authenticate our frontend and even third party services (e.g. a Alexa skill) with users from our express backend. Also, our React frontend also uses OAuth2 to login users. OAuth is quite a topic, so below you can find useful information to get started with the logic. 
+- / (root)
+- /user (user-profile & user-based recipes related endpoint)
+- /auth (authentication-oauth2-token endpoint)
+- /recipe (endpoint to crud recipes)
+- /ingredient (endpoint to crud ingredients)
+- /allergy (profile-endpoint: only get allergies)
+- /category (profile-endpoint: only get categories)
+- /lifestyle (profile-endpoint: only get lifestyles)
+- /goal (profile-endpoint: only get goals)
 
-### Obtaining new bearer token
-For obtaining a new bearer token only the `password` grant of the [RFC6749](https://tools.ietf.org/html/rfc6749) is implemented. To obtain a new, valid token you have to provide the following information:
+## / 
+This endpoint is for testing purposes only. It will reply with string `'Foodo backend received HTTP GET method'`.
 
-###### Body information
-- Grant type: String as in RFC6749 defined (currently only `password` implemented)
-- Username: Identification (e.g. email) of user that wants to obtain the token
-- Password: Password of user
+## /auth
+This endpoint hosts all authentication related methods. Behind the scenes an oauth2-server handles your request to obtain or validate a token. 
 
-###### Header information
-- Authorization: keyword '_Basic_' followed by `clientId:clientSecret` as base64 encoded string
-- Content-Type: `application/x-www-form-urlencoded`
+| Endpoint (METHOD)     | Req-Body     | Response  |
+| :------------------------------- | :----: | :-----:|
+| **/auth/register** (POST)  | user object `user: { name, password, locale }`      |   newly created user object      |
+| **/auth/token** (POST)  | `req` as described in [here](https://tools.ietf.org/html/rfc6749.html) (password, refresh & auth-code grant_types are available)  | Bearer token to use in new requests.     |
+| **/auth/authorize** (GET) |   -   |    Bearer token     |
+| **/auth/password** (PUT) |   `{ password }` string   |    `{ msg: 'Password updated successfully' }`     |
 
-### Using token to authenticate
-After receiving a new bearer token, it can be included in the header of every request to identify the current user. 
+## /user
+This endpoint hosts all user and corresponding recipes related methods. All request must contain a valid bearer token in the authorization header.
 
-###### Header information
-- Authorization: keyword '_Bearer_' followed by `<access-token>` as base64 encoded string
+| Endpoint (METHOD)        | Req-Body     | Response  |
+| :------------------------------- | :----: | :-----:|
+| **/user/me** (GET)  |  - |   user object      |
+| **/user/locale** (POST)  |  `{ locale }` string  |  updated user object    |
+| **/user/allergies** (POST) |   `[{ allergy }]` allergies array   |    updated user object     |
+| **/user/allergy** (PUT) |   `{ allergy }` allergy object   |    `{ msg: 'Successfully added allergy' }`   |
+| **/user/allergy** (DELETE) |   `{ allergy }` allergy object   |    `{ msg: 'Successfully removed allergy' }`   |
+| **/user/dislikes** (POST) |   `[{ dislikes }]` ingredients array   |    updated user object     |
+| **/user/dislike** (PUT) |   `{ dislike }` ingredient object   |    `{ msg: 'Successfully added dislike' }`   |
+| **/user/dislike** (DELETE) |   `{ dislike }` ingredient object   |    `{ msg: 'Successfully removed dislike' }`   |
+| **/user/goal** (POST)  |  `{ goal }` goal object  |  updated user object    |
+| **/user/lifestyle** (POST)  |  `{ lifestyle }` lifestyle object  |  updated user object    |
+| **/user/recipe** (POST)  |  `{ personalizedRecipe }` personalizedRecipe object  |  newly created personalized recipe object    |
+| **/user/recipe** (PUT)  |  `{ personalizedRecipe }` personalizedRecipe object  |  updated personalized recipe object    |
+| **/user/recipe** (GET)  |  -  |  `[{ personalizedRecipe }]` personalizedRecipe object array    |
+| **/user/recipe/:id** (GET)  |  -  |  `{ personalizedRecipe }` personalizedRecipe object with :id  |
 
-Currently the token includes email and id of a user (at time of creation) which would have to be permanently saved (e.g. db, file, etc.) using `saveToken()`-method.  
+## /allergy /category /lifestyle /goal
+These endpoints host their namely-related methods. They are used for initiliazing the frontend ui.
 
-## Example of usage
-For testing the examples please make sure you have `curl` installed on your machine.
+| Endpoint (METHOD)        | Req-Body     | Response  |
+| :------------------------------- | :----: | :-----:|
+| **/allergy** (GET)  |  - |   `[{ allergy }]` allergy object array      |
+| **/lifestyles** (GET)  |  -  |  `[{ lifestyle }]` lifestyle object array   |
+ | **/category** (GET)  |  -  | `[{ category }]` food category object array    |
+ | **/goal** (GET)  |  -  |  `[{ goal }]` goal object array    |
 
-###### Obtaining a new token:
-```
-curl http://localhost:3333/oauth/token \
-	-d "grant_type=password" \
-	-d "username=<username>" \
-	-d "password=<verysecret>" \
-	-H "Authorization: Basic YWxleGE6c2VjcmV0" \
-	-H "Content-Type: application/x-www-form-urlencoded"
-```
-Should result in something like this:
-```
-{
-"accessToken":"4ca38497aa7e75b4b144933e6eaf744925b23831", 
-"accessTokenExpiresAt":"2019-05 20T11:22:34.292Z", 
-"refreshToken":"47780f03558fa30d9d90872a1082795bd8693c67",
-"refreshTokenExpiresAt":"2019-06-03T10:22:34.294Z", 
-"client": <Your client object>, 
-"user": <Your user object>
-}
-```
+## /recipe
+This endpoint hosts all recipe related methods. Will only be used in admin interface during prototype phase.
 
-###### Using token to authenticate:
-```
-curl http://localhost:3333/auth/me \
-	-H "Authorization: Bearer 4ca38497aa7e75b4b144933e6eaf744925b23831"
-```
-To receive your user object.
+| Endpoint (METHOD)        | Req-Body     | Response  |
+| :------------------------------- | :----: | :-----:|
+| **/** (POST)  |  `{ recipe }` recipe object  |  newly created recipe object    |
+| **/** (GET)  |  -  |  `[{ recipe }]` recipe object array    |
+| **/:id** (GET) (tbd)  |  -  |  `{ recipe }` recipe object with :id    | 
+
+## /ingredient
+This endpoint hosts all ingredient related methods. Will only be used in admin interface during prototype phase.
+
+| Endpoint (METHOD)        | Req-Body     | Response  |
+| :------------------------------- | :----: | :-----:|
+| **/** (GET)  |  -  |  `[{ ingredient }]` ingredient object array    |
+| **/:id** (GET)  |  -  |  `{ ingredient }` ingredient object with :id    | 
+| **/group/:id** (GET)  |  -  |  `[{ ingredient }]` ingredient object array of group/category :id    |
+| **/changevalue** (POST)  |  `{ id }` ingredient id string & `{ amount }` real number relative to amount 100ml/g   |  `{ message: 'Successfully updated ingredient' }`    |
 
 ## AWS Elastic Beanstalk deployment
 In order to deploy to AWS EB make sure to have a `.npmrc` file in the root folder of the project. This is necessary for `bcrypt`: [see here](https://github.com/kelektiv/node.bcrypt.js/wiki/Installation-Instructions) for details.
@@ -105,5 +100,5 @@ Content of file:
 unsafe-perm=true
 
 ```
-The folder `.ebextensions` contains the node command to start up the application on AWS EB. Will be removed after forking.
+The folder `.ebextensions` contains the node command to start up the application on AWS EB.
 
