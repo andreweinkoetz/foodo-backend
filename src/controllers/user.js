@@ -103,10 +103,9 @@ const getRecipesOfUser = ( req, res ) => {
 };
 
 const getSingleRecipeOfUser = ( req, res ) => PersonalizedRecipeModel
-// eslint-disable-next-line quotes
-    .findOne( { "personalizedRecipe.origRecipe": req.params.id, user: req.body.userId } )
+    .findOne( { 'personalizedRecipe.origRecipe': req.params.id, user: req.body.userId } )
     .populate( 'origRecipe' )
-    .populate( 'ingredients' )
+    .populate( 'personalizedRecipe.ingredients.ingredient' )
     .populate( 'client' )
     .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
     .populate( { path: 'blockedSubstitutions', populate: { path: 'blockedSubs' } } )
