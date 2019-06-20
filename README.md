@@ -4,15 +4,15 @@
 
 This repository is set-up for unix systems only. Some scripts will not work on Windows, so it is storngly recommended that you work with this repository on a unix machine.
 
-### `npm install`
+##### `npm install`
 
 Install all third party dependencies. See `package.json` for more information.
 
-### setup .env
+##### setup `.env`
 
 Create a new file called `.env` and copy the template from `EXAMPLE.env`. Ask your co-contributors for the secrets and save them to your .env file. Please make sure that you keep the .env file private and do not share the information in the file with anyone. Do not add `.env` to git! 
 
-### `npm run dev`
+##### `npm run dev`
 
 This will start the development server on localhost. Please make sure that you have set the Port within the `.env` file. e.g. `PORT=3333`
 
@@ -80,7 +80,7 @@ This endpoint hosts all recipe related methods. Will only be used in admin inter
 | :------------------------------- | :----: | :-----:|
 | **/** (POST)  |  `{ recipe }` recipe object  |  newly created recipe object    |
 | **/** (GET)  |  -  |  `[{ recipe }]` recipe object array    |
-| **/:id** (GET) (tbd)  |  -  |  `{ recipe }` recipe object with :id    | 
+| **/:id** (GET)  |  -  |  `{ recipe }` recipe object with :id    | 
 
 ## /ingredient
 This endpoint hosts all ingredient related methods. Will only be used in admin interface during prototype phase.
