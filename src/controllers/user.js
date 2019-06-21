@@ -82,19 +82,24 @@ const me = ( req, res ) => {
         .then( token => res.status( 200 ).json( token.user ) );
 };
 
-const updatePersonalizedRecipe = ( req, res ) => {
-    const updateRecipe = lodash.cloneDeep( req.body.recipe );
-    return PersonalizedRecipeModel
-        .findByIdAndUpdate( { _id: req.params.id },
-            { personalizedRecipe: updateRecipe }, { new: true } )
-        .then( persRecipe => res.status( 200 ).json( persRecipe ) );
-};
-
 const insertPersonalizedRecipe = ( req, res ) => {
-    const insertRecipe = lodash.cloneDeep( req.body.recipe );
-    return PersonalizedRecipeModel
-        .create( insertRecipe )
-        .then( persRecipe => res.status( 200 ).json( persRecipe ) );
+    const personalizedRecipe = {
+        user: req.body.userId,
+        client: req.body.clientId,
+        personalizedRecipe: req.body.personalizedRecipe,
+    };
+    PersonalizedRecipeModel
+        .create( personalizedRecipe )
+        .then( ( persRecipe ) => {
+            PersonalizedRecipeModel.findById( persRecipe._id )
+                .populate( 'personalizedRecipe.origRecipe' )
+                .populate( 'personalizedRecipe.origRecipe.ingredients.ingredient' )
+                .populate( 'personalizedRecipe.ingredients.ingredient' )
+                .populate( 'client' )
+                .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
+                .populate( { path: 'blockedSubstitutions', populate: { path: 'blockedSubs' } } )
+                .then( popPersRecipe => res.status( 200 ).json( popPersRecipe ) );
+        } );
 };
 
 const getRecipesOfUser = ( req, res ) => {
@@ -107,9 +112,10 @@ const getRecipesOfUser = ( req, res ) => {
 };
 
 const getSingleRecipeOfUser = ( req, res ) => PersonalizedRecipeModel
-    .findById( { _id: req.params.id } )
-    .populate( 'origRecipe' )
-    .populate( 'ingredients' )
+    .findOne( { 'personalizedRecipe.origRecipe': req.params.id, user: req.body.userId } )
+    .populate( 'personalizedRecipe.origRecipe' )
+    .populate( 'personalizedRecipe.origRecipe.ingredients.ingredient' )
+    .populate( 'personalizedRecipe.ingredients.ingredient' )
     .populate( 'client' )
     .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
     .populate( { path: 'blockedSubstitutions', populate: { path: 'blockedSubs' } } )
@@ -122,7 +128,6 @@ module.exports = {
     setAllergies,
     setLocale,
     me,
-    updatePersonalizedRecipe,
     insertPersonalizedRecipe,
     getRecipesOfUser,
     getSingleRecipeOfUser,
