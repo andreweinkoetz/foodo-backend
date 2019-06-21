@@ -31,9 +31,36 @@ const substituteIngredients = ( req, res ) => {
         } );
 };
 
+const blockSubstitution = ( req, res ) => {
+    const persRecipeId = req.params.id;
+    const origIngredientId = req.body.origId;
+    const subIngredient = req.body.subId;
+
+    PersonalizedRecipeModel.findById( persRecipeId )
+        .populate( 'personalizedRecipe.blockedSubstitutions' )
+        .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
+        .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
+        .then( ( recipe ) => {
+            const origIngredient = recipe.personalizedRecipe.blockedSubstitutions
+                .find( entry => entry.orig._id === origIngredientId );
+            if ( !origIngredient ) {
+                recipe.personalizedRecipe.blockedSubstitutions.push( {
+                    orig: origIngredientId,
+                    blockedSubs: [ subIngredient ],
+                } );
+            } else {
+                recipe.personalizedRecipe.blockedSubstitutions.blockedSubs.push( subIngredient );
+            }
+            recipe.save();
+            console.log( recipe.personalizedRecipe.blockedSubstitutions );
+        } );
+    return res.status( 200 ).json( { msg: 'success' } );
+};
+
 module.exports = {
     getAllRecipes,
     getRecipeById,
     insertRecipe,
     substituteIngredients,
+    blockSubstitution,
 };

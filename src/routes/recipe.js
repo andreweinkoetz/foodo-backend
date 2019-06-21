@@ -9,5 +9,6 @@ router.get( '/', RecipesController.getAllRecipes );
 router.get( '/:id', RecipesController.getRecipeById );
 router.post( '/', RecipesController.insertRecipe );
 router.get( '/:id/substitutes', RecipesController.substituteIngredients );
+router.put( '/:id/blocksubstitute', RecipesController.blockSubstitution );
 
 module.exports = router;

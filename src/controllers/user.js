@@ -117,8 +117,8 @@ const getSingleRecipeOfUser = ( req, res ) => PersonalizedRecipeModel
     .populate( 'personalizedRecipe.origRecipe.ingredients.ingredient' )
     .populate( 'personalizedRecipe.ingredients.ingredient' )
     .populate( 'client' )
-    .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
-    .populate( { path: 'blockedSubstitutions', populate: { path: 'blockedSubs' } } )
+    .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
+    .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
     .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
 
 module.exports = {
