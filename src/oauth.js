@@ -9,8 +9,10 @@ const ClientModel = require( './models/client' );
 const TokenModel = require( './models/token' );
 const CodeModel = require( './models/code' );
 
+const logger = require( './logger' ).getLogger( 'oauth' );
+
 const convertTokenAlexa = async ( token ) => {
-    console.log( 'Converting token for Alexa ...' );
+    logger.debug( 'Converting token for Alexa ...' );
     const alexaToken = lodash.cloneDeep( token );
     alexaToken.access_token = alexaToken.accessToken;
     // alexaToken.accessToken = undefined;
@@ -22,7 +24,7 @@ const convertTokenAlexa = async ( token ) => {
 };
 
 const getUser = async ( username, password ) => {
-    console.log( 'getUser-function called' );
+    logger.debug( 'getUser-function called' );
 
     const user = await UserModel
         .findOne( { username } )
@@ -37,8 +39,7 @@ const getUser = async ( username, password ) => {
 };
 
 const getClient = async ( clientId, clientSecret ) => {
-    console.log( 'getClient-function called' );
-
+    logger.debug( 'getClient-function called' );
     // Checks if there's a clientId with matching clientSecret.
     const client = await ClientModel.findOne( { clientId } ).exec();
     if ( clientSecret ) {
@@ -48,7 +49,7 @@ const getClient = async ( clientId, clientSecret ) => {
 };
 
 const saveToken = async ( token, client, user ) => {
-    console.log( 'saveToken-function called' );
+    logger.debug( 'saveToken-function called' );
 
     const savingToken = lodash.cloneDeep( token );
     savingToken.user = user._id;
@@ -68,7 +69,7 @@ const saveToken = async ( token, client, user ) => {
 };
 
 const getAccessToken = async ( accessToken ) => {
-    console.log( 'getAccessToken called' );
+    logger.debug( 'getAccessToken called' );
 
     const token = await TokenModel.findOne( { accessToken } ).populate( 'user' ).populate( 'client' ).exec();
 
@@ -78,7 +79,7 @@ const getAccessToken = async ( accessToken ) => {
 };
 
 const getAuthorizationCode = async ( authorizationCode ) => {
-    console.log( 'getAuthorizationCode called' );
+    logger.debug( 'getAuthorizationCode called' );
 
     const code = await CodeModel.findOne( { authorizationCode } ).populate( 'client' ).exec();
 
@@ -86,7 +87,7 @@ const getAuthorizationCode = async ( authorizationCode ) => {
 };
 
 const saveAuthorizationCode = async ( code, client, user ) => {
-    console.log( 'saveAuthorizationCode called' );
+    logger.debug( 'saveAuthorizationCode called' );
 
     const savingCode = lodash.cloneDeep( code );
     savingCode.client = client._id;
@@ -98,7 +99,7 @@ const saveAuthorizationCode = async ( code, client, user ) => {
 };
 
 const getRefreshToken = async ( refreshToken ) => {
-    console.log( 'getRefreshToken called' );
+    logger.debug( 'getRefreshToken called' );
 
     // Check if this refresh token exists.
     const token = await TokenModel.findOne( { refreshToken } ).populate( 'user' ).populate( 'client' ).exec();
@@ -107,7 +108,7 @@ const getRefreshToken = async ( refreshToken ) => {
 };
 
 const revokeAuthorizationCode = async ( code ) => {
-    console.log( 'revokeAuthorizationCode called' );
+    logger.debug( 'revokeAuthorizationCode called' );
 
     const removedCode = await CodeModel
         .findOneAndDelete( { authorizationCode: code.authorizationCode } )
@@ -117,7 +118,7 @@ const revokeAuthorizationCode = async ( code ) => {
 };
 
 const revokeToken = async ( token ) => {
-    console.log( 'RevokeToken called' );
+    logger.debug( 'RevokeToken called' );
 
     const removedToken = await TokenModel
         .findOneAndDelete( { refreshToken: token.refreshToken } ).exec();
