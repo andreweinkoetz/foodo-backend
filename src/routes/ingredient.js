@@ -7,7 +7,9 @@ const IngredientsController = require( '../controllers/ingredient' );
 
 router.get( '/', IngredientsController.getAllIngredients );
 router.get( '/:id', IngredientsController.getIngredientById );
-router.get( '/groups/:id', IngredientsController.getIngredientsByGroup );
+router.get( '/categories/:id', IngredientsController.getIngredientsByCategory );
+router.get( '/categories/', IngredientsController.getIngredientsWithoutCategories );
 router.post( '/changevalue', IngredientsController.changeIngredientValues );
+router.post( '/setcategory', IngredientsController.setCategoryOfIngredient );
 
 module.exports = router;

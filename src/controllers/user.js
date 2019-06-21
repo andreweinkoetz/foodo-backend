@@ -1,4 +1,3 @@
-const lodash = require( 'lodash' );
 const UserModel = require( '../models/user' );
 const PersonalizedRecipeModel = require( '../models/personalizedRecipe' );
 const TokenModel = require( '../models/token' );
@@ -115,6 +114,7 @@ const getSingleRecipeOfUser = ( req, res ) => PersonalizedRecipeModel
     .findOne( { 'personalizedRecipe.origRecipe': req.params.id, user: req.body.userId } )
     .populate( 'personalizedRecipe.origRecipe' )
     .populate( 'personalizedRecipe.origRecipe.ingredients.ingredient' )
+    .populate( 'personalizedRecipe.origRecipe.ingredients.ingredient.category' )
     .populate( 'personalizedRecipe.ingredients.ingredient' )
     .populate( 'client' )
     .populate( 'personalizedRecipe.blockedSubstitutions.orig' )

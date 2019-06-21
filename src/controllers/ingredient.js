@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-syntax,guard-for-in,no-param-reassign */
 const IngredientModel = require( '../models/ingredient' );
+const CategoryModel = require( '../models/category' );
 
 const insertIngredientBatch = ( ingredientBatch ) => {
     console.log( `Inserting # ${ ingredientBatch.length } items` );
@@ -14,9 +15,13 @@ const getIngredientById = ( req, res ) => {
         .then( ingredient => res.status( 200 ).json( ingredient ) );
 };
 
-const getIngredientsByGroup = ( req, res ) => {
-    IngredientModel.find( { foodGroup: req.params.group } )
+const getIngredientsByCategory = ( req, res ) => {
+    IngredientModel.find( { category: req.params.id } )
         .then( ingredient => res.status( 200 ).json( ingredient ) );
+};
+const getIngredientsWithoutCategories = ( req, res ) => {
+    IngredientModel.find( { category: { $exists: false } } )
+        .then( ingredients => res.status( 200 ).json( ingredients ) );
 };
 
 const changeIngredientValues = ( req, res ) => {
@@ -32,10 +37,21 @@ const changeIngredientValues = ( req, res ) => {
     } ).catch( () => res.status( 400 ).json( { message: 'You entered a wrong id!' } ) );
 };
 
+const setCategoryOfIngredient = ( req, res ) => {
+    IngredientModel.findById( { _id: req.body.id } )
+        .then( ( ingredient ) => {
+            ingredient.category = req.body.id;
+            ingredient.save();
+            return res.status( 200 ).json( { msg: 'success' } );
+        } );
+};
+
 module.exports = {
     insertIngredientBatch,
     getAllIngredients,
     getIngredientById,
-    getIngredientsByGroup,
+    getIngredientsByCategory,
     changeIngredientValues,
+    setCategoryOfIngredient,
+    getIngredientsWithoutCategories,
 };
