@@ -1,6 +1,5 @@
 /* eslint-disable no-restricted-syntax,guard-for-in,no-param-reassign */
 const IngredientModel = require( '../models/ingredient' );
-const CategoryModel = require( '../models/category' );
 
 const insertIngredientBatch = ( ingredientBatch ) => {
     console.log( `Inserting # ${ ingredientBatch.length } items` );
