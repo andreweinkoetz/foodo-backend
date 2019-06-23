@@ -101,6 +101,24 @@ const insertPersonalizedRecipe = ( req, res ) => {
         } );
 };
 
+const updatePersonalizedRecipe = ( req, res ) => {
+    const client = req.body.clientId;
+    const { personalizedRecipe } = req.body;
+    PersonalizedRecipeModel.findOneAndUpdate( { _id: personalizedRecipe._id }, {
+        $set: {
+            ...personalizedRecipe,
+            client,
+        },
+    }, { new: true } )
+        .populate( 'personalizedRecipe.origRecipe' )
+        .populate( 'personalizedRecipe.origRecipe.ingredients.ingredient' )
+        .populate( 'personalizedRecipe.ingredients.ingredient' )
+        .populate( 'client' )
+        .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
+        .populate( { path: 'blockedSubstitutions', populate: { path: 'blockedSubs' } } )
+        .then( popPersRecipe => res.status( 200 ).json( popPersRecipe ) );
+};
+
 const getRecipesOfUser = ( req, res ) => {
     PersonalizedRecipeModel
         .find( { user: req.body.userId } )
@@ -129,6 +147,7 @@ module.exports = {
     setLocale,
     me,
     insertPersonalizedRecipe,
+    updatePersonalizedRecipe,
     getRecipesOfUser,
     getSingleRecipeOfUser,
     addDislike,
