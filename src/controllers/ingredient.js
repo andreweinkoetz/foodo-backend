@@ -37,9 +37,9 @@ const changeIngredientValues = ( req, res ) => {
 };
 
 const setCategoryOfIngredient = ( req, res ) => {
-    IngredientModel.findById( { _id: req.body.id } )
+    IngredientModel.findById( { _id: req.body._id } )
         .then( ( ingredient ) => {
-            ingredient.category = req.body.id;
+            ingredient.category = req.body.categoryId;
             ingredient.save();
             return res.status( 200 ).json( { msg: 'success' } );
         } );
