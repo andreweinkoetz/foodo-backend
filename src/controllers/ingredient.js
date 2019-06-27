@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-syntax,guard-for-in,no-param-reassign */
 const IngredientModel = require( '../models/ingredient' );
+const logger = require( '../logger' ).getLogger( 'ingredient_controller' );
 
 const insertIngredientBatch = ( ingredientBatch ) => {
     console.log( `Inserting # ${ ingredientBatch.length } items` );
@@ -19,8 +20,9 @@ const getIngredientsByCategory = ( req, res ) => {
         .then( ingredient => res.status( 200 ).json( ingredient ) );
 };
 const getIngredientsWithoutCategories = ( req, res ) => {
-    IngredientModel.find( { category: { $exists: false } } )
-        .then( ingredients => res.status( 200 ).json( ingredients ) );
+    IngredientModel.find( { category: { $exists: 0 } } )
+        .then( ingredients => res.status( 200 ).json( ingredients ) )
+        .catch( err => logger.error( err ) );
 };
 
 const changeIngredientValues = ( req, res ) => {
@@ -37,9 +39,9 @@ const changeIngredientValues = ( req, res ) => {
 };
 
 const setCategoryOfIngredient = ( req, res ) => {
-    IngredientModel.findById( { _id: req.body.id } )
+    IngredientModel.findById( { _id: req.body._id } )
         .then( ( ingredient ) => {
-            ingredient.category = req.body.id;
+            ingredient.category = req.body.categoryId;
             ingredient.save();
             return res.status( 200 ).json( { msg: 'success' } );
         } );
