@@ -1,7 +1,7 @@
 const GoalModel = require( '../../models/goal' );
 const LifestyleModel = require( '../../models/lifestyle' );
 const AllergyModel = require( '../../models/allergy' );
-const CategoryModel = require( '../../models/allergy' );
+const CategoryModel = require( '../../models/category' );
 
 const CACHE = {};
 
