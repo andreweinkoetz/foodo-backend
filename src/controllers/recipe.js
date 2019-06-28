@@ -52,7 +52,6 @@ const blockSubstitution = ( req, res ) => {
                 recipe.personalizedRecipe.blockedSubstitutions.blockedSubs.push( subIngredient );
             }
             recipe.save();
-            console.log( recipe.personalizedRecipe.blockedSubstitutions );
         } );
     return res.status( 200 ).json( { msg: 'success' } );
 };
