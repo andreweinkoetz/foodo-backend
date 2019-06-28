@@ -1,5 +1,4 @@
 const UserModel = require( '../models/user' );
-const PersonalizedRecipeModel = require( '../models/personalizedRecipe' );
 const TokenModel = require( '../models/token' );
 
 const setGoal = ( req, res ) => UserModel
@@ -81,78 +80,6 @@ const me = ( req, res ) => {
         .then( token => res.status( 200 ).json( token.user ) );
 };
 
-const insertPersonalizedRecipe = ( req, res ) => {
-    const personalizedRecipe = {
-        user: req.body.userId,
-        client: req.body.clientId,
-        personalizedRecipe: req.body.personalizedRecipe,
-    };
-    PersonalizedRecipeModel
-        .create( personalizedRecipe )
-        .then( ( persRecipe ) => {
-            PersonalizedRecipeModel.findById( persRecipe._id )
-                .populate( 'personalizedRecipe.origRecipe' )
-                .populate( 'personalizedRecipe.origRecipe.ingredients.ingredient' )
-                .populate( 'personalizedRecipe.ingredients.ingredient' )
-                .populate( 'client' )
-                .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
-                .populate( { path: 'blockedSubstitutions', populate: { path: 'blockedSubs' } } )
-                .then( popPersRecipe => res.status( 200 ).json( popPersRecipe ) );
-        } );
-};
-
-const updatePersonalizedRecipe = ( req, res ) => {
-    const client = req.body.clientId;
-    const { personalizedRecipe } = req.body;
-    PersonalizedRecipeModel.findOneAndUpdate( { _id: personalizedRecipe._id }, {
-        $set: {
-            ...personalizedRecipe,
-            client,
-        },
-    }, { new: true } )
-        .populate( 'personalizedRecipe.origRecipe' )
-        .populate( 'personalizedRecipe.origRecipe.ingredients.ingredient' )
-        .populate( 'personalizedRecipe.ingredients.ingredient' )
-        .populate( 'client' )
-        .populate( { path: 'blockedSubstitutions', populate: { path: 'orig' } } )
-        .populate( { path: 'blockedSubstitutions', populate: { path: 'blockedSubs' } } )
-        .then( popPersRecipe => res.status( 200 ).json( popPersRecipe ) );
-};
-
-const getRecipesOfUser = ( req, res ) => {
-    PersonalizedRecipeModel
-        .find( { user: req.body.userId } )
-        .populate( 'origRecipe' )
-        .populate( 'ingredients' )
-        .populate( 'client' )
-        .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
-};
-
-const getSingleRecipeOfUser = ( req, res ) => PersonalizedRecipeModel
-    .findOne( { 'personalizedRecipe.origRecipe': req.params.id, user: req.body.userId } )
-    .populate( 'personalizedRecipe.origRecipe' )
-    .populate( {
-        path: 'personalizedRecipe.origRecipe',
-        populate: {
-            path: 'ingredients.ingredient',
-            model: 'Ingredient',
-            populate: {
-                path: 'category',
-                model: 'Category',
-            },
-        },
-    } )
-    .populate( {
-        path: 'personalizedRecipe.ingredients.ingredient',
-        populate: {
-            path: 'category',
-            model: 'Category',
-        },
-    } )
-    .populate( 'client' )
-    .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
-    .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
-    .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
 
 module.exports = {
     setGoal,
@@ -161,10 +88,6 @@ module.exports = {
     setAllergies,
     setLocale,
     me,
-    insertPersonalizedRecipe,
-    updatePersonalizedRecipe,
-    getRecipesOfUser,
-    getSingleRecipeOfUser,
     addDislike,
     addAllergy,
     deleteAllergy,

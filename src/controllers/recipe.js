@@ -56,10 +56,136 @@ const blockSubstitution = ( req, res ) => {
     return res.status( 200 ).json( { msg: 'success' } );
 };
 
+const getRecipesOfUser = ( req, res ) => {
+    PersonalizedRecipeModel
+        .find( { user: req.body.userId } )
+        .populate( 'personalizedRecipe.origRecipe' )
+        .populate( {
+            path: 'personalizedRecipe.origRecipe',
+            populate: {
+                path: 'ingredients.ingredient',
+                model: 'Ingredient',
+                populate: {
+                    path: 'category',
+                    model: 'Category',
+                },
+            },
+        } )
+        .populate( {
+            path: 'personalizedRecipe.ingredients.ingredient',
+            populate: {
+                path: 'category',
+                model: 'Category',
+            },
+        } )
+        .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
+        .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
+        .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
+};
+
+const getSingleRecipeOfUser = ( req, res ) => PersonalizedRecipeModel
+    .findOne( { 'personalizedRecipe.origRecipe': req.params.id, user: req.body.userId } )
+    .populate( 'personalizedRecipe.origRecipe' )
+    .populate( {
+        path: 'personalizedRecipe.origRecipe',
+        populate: {
+            path: 'ingredients.ingredient',
+            model: 'Ingredient',
+            populate: {
+                path: 'category',
+                model: 'Category',
+            },
+        },
+    } )
+    .populate( {
+        path: 'personalizedRecipe.ingredients.ingredient',
+        populate: {
+            path: 'category',
+            model: 'Category',
+        },
+    } )
+    .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
+    .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
+    .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
+
+
+const insertPersonalizedRecipe = ( req, res ) => {
+    const personalizedRecipe = {
+        user: req.body.userId,
+        client: req.body.clientId,
+        personalizedRecipe: req.body.personalizedRecipe,
+    };
+    PersonalizedRecipeModel
+        .create( personalizedRecipe )
+        .then( ( persRecipe ) => {
+            PersonalizedRecipeModel.findById( persRecipe._id )
+                .populate( 'personalizedRecipe.origRecipe' )
+                .populate( {
+                    path: 'personalizedRecipe.origRecipe',
+                    populate: {
+                        path: 'ingredients.ingredient',
+                        model: 'Ingredient',
+                        populate: {
+                            path: 'category',
+                            model: 'Category',
+                        },
+                    },
+                } )
+                .populate( {
+                    path: 'personalizedRecipe.ingredients.ingredient',
+                    populate: {
+                        path: 'category',
+                        model: 'Category',
+                    },
+                } )
+                .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
+                .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
+                .then( popPersRecipe => res.status( 200 ).json( popPersRecipe ) );
+        } );
+};
+
+const updatePersonalizedRecipe = ( req, res ) => {
+    const client = req.body.clientId;
+    const { personalizedRecipe } = req.body;
+    PersonalizedRecipeModel.findOneAndUpdate( { _id: personalizedRecipe._id }, {
+        $set: {
+            ...personalizedRecipe,
+            client,
+        },
+    }, { new: true } )
+        .populate( 'personalizedRecipe.origRecipe' )
+        .populate( {
+            path: 'personalizedRecipe.origRecipe',
+            populate: {
+                path: 'ingredients.ingredient',
+                model: 'Ingredient',
+                populate: {
+                    path: 'category',
+                    model: 'Category',
+                },
+            },
+        } )
+        .populate( {
+            path: 'personalizedRecipe.ingredients.ingredient',
+            populate: {
+                path: 'category',
+                model: 'Category',
+            },
+        } )
+        .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
+        .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
+        .then( popPersRecipe => res.status( 200 ).json( popPersRecipe ) );
+};
+
+
 module.exports = {
     getAllRecipes,
     getRecipeById,
     insertRecipe,
     substituteIngredients,
     blockSubstitution,
+    getSingleRecipeOfUser,
+    updatePersonalizedRecipe,
+    getRecipesOfUser,
+    insertPersonalizedRecipe,
 };
