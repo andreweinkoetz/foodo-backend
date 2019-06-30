@@ -8,15 +8,19 @@ const insertIngredientBatch = ( ingredientBatch ) => {
 };
 
 const getAllIngredients = ( req, res ) => IngredientModel
-    .find( {} ).then( ingredients => res.status( 200 ).json( ingredients ) );
+    .find( {} )
+    .populate( 'category' )
+    .then( ingredients => res.status( 200 ).json( ingredients ) );
 
 const getIngredientById = ( req, res ) => {
     IngredientModel.findById( { _id: req.params.id } )
+        .populate( 'category' )
         .then( ingredient => res.status( 200 ).json( ingredient ) );
 };
 
 const getIngredientsByCategory = ( req, res ) => {
     IngredientModel.find( { category: req.params.id } )
+        .populate( 'category' )
         .then( ingredient => res.status( 200 ).json( ingredient ) );
 };
 const getIngredientsWithoutCategories = ( req, res ) => {
@@ -29,17 +33,20 @@ const changeIngredientValues = ( req, res ) => {
     const { id } = req.body;
     const { amount } = req.body;
 
-    IngredientModel.findById( { _id: id } ).then( ( ingredient ) => {
-        for ( const element in ingredient.elements ) {
-            ingredient.elements[ element ] *= amount;
-        }
-        ingredient.save();
-        res.status( 200 ).json( { message: 'Successfully updated ingredient' } );
-    } ).catch( () => res.status( 400 ).json( { message: 'You entered a wrong id!' } ) );
+    IngredientModel.findById( { _id: id } )
+        .populate( 'category' )
+        .then( ( ingredient ) => {
+            for ( const element in ingredient.elements ) {
+                ingredient.elements[ element ] *= amount;
+            }
+            ingredient.save();
+            res.status( 200 ).json( { message: 'Successfully updated ingredient' } );
+        } ).catch( () => res.status( 400 ).json( { message: 'You entered a wrong id!' } ) );
 };
 
 const setCategoryOfIngredient = ( req, res ) => {
     IngredientModel.findById( { _id: req.body._id } )
+        .populate( 'category' )
         .then( ( ingredient ) => {
             ingredient.category = req.body.categoryId;
             ingredient.save();
