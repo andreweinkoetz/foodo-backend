@@ -21,8 +21,24 @@ const substituteIngredients = ( req, res ) => {
     PersonalizedRecipeModel.findById( persRecipeId )
         .populate( 'user' )
         .populate( 'client' )
-        .populate( 'personalizedRecipe.origRecipe' )
-        .populate( 'personalizedRecipe.ingredients.ingredient' )
+        .populate( {
+            path: 'personalizedRecipe.origRecipe',
+            populate: {
+                path: 'ingredients.ingredient',
+                model: 'Ingredient',
+                populate: {
+                    path: 'category',
+                    model: 'Category',
+                },
+            },
+        } )
+        .populate( {
+            path: 'personalizedRecipe.ingredients.ingredient',
+            populate: {
+                path: 'category',
+                model: 'Category',
+            },
+        } )
         .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
         .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
         .then( ( persRecipe ) => {
