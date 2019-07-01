@@ -68,10 +68,10 @@ These endpoints host their namely-related methods. They are used for initiliazin
 
 | Endpoint (METHOD)        | Req-Body     | Response  |
 | :------------------------------- | :----: | :-----:|
-| **/allergy** (GET)  |  - |   `[{ allergy }]` allergy object array      |
+| **/allergies** (GET)  |  - |   `[{ allergy }]` allergy object array      |
 | **/lifestyles** (GET)  |  -  |  `[{ lifestyle }]` lifestyle object array   |
- | **/category** (GET)  |  -  | `[{ category }]` food category object array    |
- | **/goal** (GET)  |  -  |  `[{ goal }]` goal object array    |
+ | **/categories** (GET)  |  -  | `[{ category }]` food category object array    |
+ | **/goals** (GET)  |  -  |  `[{ goal }]` goal object array    |
 
 ## /recipe
 This endpoint hosts all recipe related methods. Will only be used in admin interface during prototype phase.
