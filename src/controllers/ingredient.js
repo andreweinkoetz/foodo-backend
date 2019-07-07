@@ -64,6 +64,16 @@ const setAllergiesOfIngredient = ( req, res ) => {
         } );
 };
 
+const setLifestylesOfIngredient = ( req, res ) => {
+    IngredientModel.findById( { _id: req.body._id } )
+        .populate( 'notForLifestyles' )
+        .then( ( ingredient ) => {
+            ingredient.notForLifestyles = req.body.notForLifestyles;
+            ingredient.save();
+            return res.status( 200 ).json( { msg: 'success' } );
+        } );
+};
+
 module.exports = {
     insertIngredientBatch,
     getAllIngredients,
@@ -73,4 +83,5 @@ module.exports = {
     setCategoryOfIngredient,
     getIngredientsWithoutCategories,
     setAllergiesOfIngredient,
+    setLifestylesOfIngredient,
 };
