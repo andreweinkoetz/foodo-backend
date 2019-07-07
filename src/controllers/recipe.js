@@ -280,8 +280,8 @@ const revertSubstitution = ( req, res ) => {
                         persRecipe.origRecipe,
                         ingredient[ 0 ].substitutionFor.original,
                     );
-                    persRecipe.personalizedRecipe.ingredients.add( originalIngredient );
-                    persRecipe.personalizedRecipe.ingredients.add( oldIngredient );
+                    persRecipe.personalizedRecipe.ingredients
+                        .push( originalIngredient, oldIngredient );
                     _.remove( persRecipe.personalizedRecipe.ingredients,
                         i => i.substitutionFor._id === historyId );
                     persRecipe.save();
@@ -347,7 +347,7 @@ const substituteIngredient = ( req, res ) => {
                         doubleIngredient.amount += amount;
                         doubleIngredient.substitutionFor = subHistory._id;
                     } else {
-                        persRecipe.ingredients.add( {
+                        persRecipe.personalizedRecipe.ingredients.push( {
                             ingredient: substituteId,
                             substitutionFor: subHistory._id,
                             amount,
