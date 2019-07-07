@@ -54,6 +54,16 @@ const setCategoryOfIngredient = ( req, res ) => {
         } );
 };
 
+const setAllergiesOfIngredient = ( req, res ) => {
+    IngredientModel.findById( { _id: req.body._id } )
+        .populate( 'notForAllergy' )
+        .then( ( ingredient ) => {
+            ingredient.notForAllergy = req.body.notForAllergy;
+            ingredient.save();
+            return res.status( 200 ).json( { msg: 'success' } );
+        } );
+};
+
 module.exports = {
     insertIngredientBatch,
     getAllIngredients,
@@ -62,4 +72,5 @@ module.exports = {
     changeIngredientValues,
     setCategoryOfIngredient,
     getIngredientsWithoutCategories,
+    setAllergiesOfIngredient,
 };
