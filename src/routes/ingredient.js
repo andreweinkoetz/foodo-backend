@@ -12,6 +12,6 @@ router.get( '/categories/:id', IngredientsController.getIngredientsByCategory );
 router.post( '/changevalue', IngredientsController.changeIngredientValues );
 router.post( '/setcategory', IngredientsController.setCategoryOfIngredient );
 router.post( '/setallergies', IngredientsController.setAllergiesOfIngredient );
-router.post( '/setlifestyles', IngredientsController.setLifestylesOfIngredient() );
+router.post( '/setlifestyles', IngredientsController.setLifestylesOfIngredient );
 
 module.exports = router;
