@@ -104,26 +104,6 @@ const getRecipesOfUser = ( req, res ) => {
     PersonalizedRecipeModel
         .find( { user: req.body.userId } )
         .populate( 'personalizedRecipe.origRecipe' )
-        .populate( {
-            path: 'personalizedRecipe.origRecipe',
-            populate: {
-                path: 'ingredients.ingredient',
-                model: 'Ingredient',
-                populate: {
-                    path: 'category',
-                    model: 'Category',
-                },
-            },
-        } )
-        .populate( {
-            path: 'personalizedRecipe.ingredients.ingredient',
-            populate: {
-                path: 'category',
-                model: 'Category',
-            },
-        } )
-        .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
-        .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
         .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
 };
 
