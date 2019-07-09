@@ -11,5 +11,4 @@ const SubstitutionSchema = new Schema( {
 SubstitutionSchema.set( 'versionKey', false );
 SubstitutionSchema.set( 'timestamps', true );
 
-// Export the Movie model
 module.exports = mongoose.model( 'Substitution', SubstitutionSchema );

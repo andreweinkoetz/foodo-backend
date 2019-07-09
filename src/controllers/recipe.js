@@ -226,80 +226,86 @@ const updatePersonalizedRecipe = ( req, res ) => {
 
 const checkDoubleIngredientEntries = ( persRecipe, substituteId ) => {
     const foundIngredient = persRecipe.personalizedRecipe.ingredients
-        .filter( ingredient => ingredient.ingredient === substituteId );
-    return foundIngredient[ 0 ];
+        .find( ingredient => ingredient.ingredient === substituteId );
+    return foundIngredient;
 };
 
 const findOriginalIngredient = ( origRecipe, substituteId ) => {
     const foundIngredient = origRecipe.ingredients
-        .filter( ingredient => ingredient.ingredient === substituteId );
-    return foundIngredient[ 0 ];
+        .find( ingredient => ingredient.ingredient === substituteId );
+    return foundIngredient;
 };
 
 const revertSubstitution = ( req, res ) => {
     const { historyId } = req.body;
-    SubstitutionModel.findById( historyId ).then( ( history ) => {
-        PersonalizedRecipeModel.findById( history.persRecipe )
-            .populate( {
-                path: 'personalizedRecipe.origRecipe',
-                populate: {
-                    path: 'ingredients.ingredient',
+    SubstitutionModel.findById( historyId )
+        .populate( 'original' )
+        .populate( 'substitute' )
+        .then( ( history ) => {
+            PersonalizedRecipeModel.findById( history.persRecipe )
+                .populate( {
+                    path: 'personalizedRecipe.origRecipe',
+                    populate: {
+                        path: 'ingredients.ingredient',
+                        model: 'Ingredient',
+                        populate: {
+                            path: 'category',
+                            model: 'Category',
+                        },
+                    },
+                } )
+                .populate( {
+                    path: 'personalizedRecipe.ingredients.ingredient',
                     model: 'Ingredient',
                     populate: {
-                        path: 'category',
+                        path: 'ingredient.category',
                         model: 'Category',
                     },
-                },
-            } )
-            .populate( {
-                path: 'personalizedRecipe.ingredients.ingredient',
-                populate: {
-                    path: 'category',
-                    model: 'Category',
-                },
-            } )
-            .populate( {
-                path: 'personalizedRecipe.ingredients.ingredient',
-                populate: {
-                    path: 'substitutionFor',
+                } )
+                .populate( {
+                    path: 'personalizedRecipe.ingredients.substitutionFor',
                     model: 'Substitution',
-                },
-            } )
-            .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
-            .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
-            .then( ( persRecipe ) => {
-                const ingredient = persRecipe.personalizedRecipe.ingredients
-                    .filter( i => i.substitutionFor._id.toString() === historyId );
+                } )
+                .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
+                .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
+                .then( ( persRecipe ) => {
+                    const ingredient = persRecipe.personalizedRecipe.ingredients
+                        .find( i => i.substitutionFor
+                        && i.substitutionFor._id.toString() === historyId );
 
-                const originalIngredient = findOriginalIngredient(
-                    persRecipe.origRecipe,
-                    ingredient[ 0 ].substitutionFor.substitute,
-                );
 
-                if ( originalIngredient ) {
-                    const oldIngredient = findOriginalIngredient(
-                        persRecipe.origRecipe,
-                        ingredient[ 0 ].substitutionFor.original,
+                    const originalIngredient = findOriginalIngredient(
+                        persRecipe.personalizedRecipe.origRecipe,
+                        history.substitute._id.toString(),
                     );
-                    persRecipe.personalizedRecipe.ingredients
-                        .push( originalIngredient, oldIngredient );
-                    _.remove( persRecipe.personalizedRecipe.ingredients,
-                        i => i.substitutionFor._id.toString() === historyId );
-                    persRecipe.save();
-                } else {
-                    persRecipe.ingredients = _.map( persRecipe.personalizedRecipe.ingredients,
-                        ( i ) => {
-                            if ( i._id === ingredient[ 0 ]._id ) {
-                                i.ingredient = i.substitutionFor.original;
-                                delete i.substitutionFor;
-                            }
-                        } );
-                    persRecipe.save();
-                }
-                return res.status( 200 )
-                    .json( persRecipe );
-            } );
-    } );
+
+                    if ( originalIngredient ) {
+                        const oldIngredient = findOriginalIngredient(
+                            persRecipe.personalizedRecipe.origRecipe,
+                            history.original._id.toString(),
+                        );
+                        persRecipe.personalizedRecipe.ingredients
+                            .push( originalIngredient, oldIngredient );
+                        _.remove( persRecipe.personalizedRecipe.ingredients,
+                            i => i.substitutionFor._id.toString() === historyId );
+                        persRecipe.save();
+                    } else {
+                        _.map( persRecipe.personalizedRecipe.ingredients,
+                            ( i ) => {
+                                if ( i._id.toString() === ingredient._id.toString() ) {
+                                    i.ingredient = i.substitutionFor.original;
+                                    delete i.substitutionFor;
+                                }
+                            } );
+                        _.remove( persRecipe.personalizedRecipe.ingredients,
+                            i => i._id.toString() === ingredient._id.toString() );
+                        persRecipe.save();
+                    }
+
+                    return res.status( 200 )
+                        .json( persRecipe );
+                } );
+        } );
 };
 
 const substituteIngredient = ( req, res ) => {
