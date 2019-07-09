@@ -6,7 +6,8 @@ const { checkAuthentication } = require( '../middlewares' );
 const CookingController = require( '../controllers/cooking' );
 
 router.post( '/start', checkAuthentication, CookingController.startCooking );
+router.get( '/substitutes', checkAuthentication, CookingController.getSubstitutes );
 router.get( '/substitute/:selectedNumber', checkAuthentication, CookingController.substituteOriginal );
-router.get( '/block', checkAuthentication, CookingController.blockSubstitution );
+router.post( '/block', checkAuthentication, CookingController.blockSubstitution );
 
 module.exports = router;

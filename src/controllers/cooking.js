@@ -106,6 +106,20 @@ const startCooking = async ( req, res ) => {
     res.status( 200 ).json( { possibleSubstitutes } );
 };
 
+const getSubstitutes = ( req, res ) => {
+    const { userId } = req.body;
+
+    CookingModel.findOne( { user: userId } )
+        .populate( 'possibleSubstitution.original' )
+        .populate( 'possibleSubstitution.substitutes' )
+        .then( ( cookingEvent ) => {
+            logger.silly( `Populated CookingEvent: ${ cookingEvent._id }` );
+            logger.silly( `Original ingredient: ${ cookingEvent.possibleSubstitution.original.name }` );
+            cookingEvent.possibleSubstitution.substitutes.map( s => logger.silly( s.name ) );
+            return res.status( 200 ).json( cookingEvent.possibleSubstitution.substitutes );
+        } );
+};
+
 const substituteOriginal = async ( req, res ) => {
     const { userId } = req.body;
     const { selectedNumber } = req.params;
@@ -150,4 +164,5 @@ module.exports = {
     startCooking,
     substituteOriginal,
     blockSubstitution,
+    getSubstitutes,
 };
