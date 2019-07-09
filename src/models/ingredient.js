@@ -168,7 +168,7 @@ const IngredientSchema = new Schema( {
                 required: true,
             },
         },
-    notForAllergy: [ { type: Schema.Types.ObjectId, ref: 'Allergy' } ],
+    notForAllergies: [ { type: Schema.Types.ObjectId, ref: 'Allergy' } ],
     notForLifestyles: [ { type: Schema.Types.ObjectId, ref: 'Lifestyle' } ],
 
 }, { collection: 'ingredient' } );
