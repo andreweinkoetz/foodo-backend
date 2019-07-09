@@ -87,7 +87,7 @@ const startCooking = async ( req, res ) => {
 
     logger.silly( `Deleting all CookingEvents of user: ${ userId }` );
     // delete all old CookingEvents of user
-    CookingModel.deleteMany( { user: userId } ).then( err => logger.error( err ) );
+    CookingModel.deleteMany( { user: userId } ).then( () => logger.silly( 'Deletion successful.' ) );
 
     logger.silly( 'Creating new CookingEvent' );
     // write cooking event to database
