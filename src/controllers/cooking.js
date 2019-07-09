@@ -120,8 +120,12 @@ const getSubstitutes = ( req, res ) => {
 };
 
 const substituteOriginal = async ( req, res ) => {
+    logger.silly( 'Entering substitute original function.' );
+
     const { userId } = req.body;
     const { selectedNumber } = req.params;
+
+    logger.silly( `Requested number: ${ selectedNumber }` );
 
     if ( selectedNumber < 1 || selectedNumber > 3 ) {
         logger.error( 'Wrong User Input' );
