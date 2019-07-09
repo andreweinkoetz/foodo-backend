@@ -37,6 +37,7 @@ const getAllergies = ( req, res ) => res.status( 200 ).json( CACHE.ALLERGIES );
 const getCategories = ( req, res ) => res.status( 200 ).json( CACHE.CATEGORIES );
 const getLifestyles = ( req, res ) => res.status( 200 ).json( CACHE.LIFESTYLES );
 const getIngredientsBase = () => CACHE.INGREDIENT_BASE;
+const getLifeStylesLocally = () => CACHE.LIFESTYLES;
 
 module.exports = {
     getIngredientsBase,
@@ -45,4 +46,5 @@ module.exports = {
     getLifestyles,
     getAllergies,
     getCategories,
+    getLifeStylesLocally,
 };
