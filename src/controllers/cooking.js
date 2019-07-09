@@ -100,7 +100,7 @@ const startCooking = async ( req, res ) => {
         possibleSubstitution: {
             original: possibleSubstitutes.original._id,
             substitutes: possibleSubstitutes.substitutes
-                .map( s => ( { ingredient: s.ingredient, amount: s.amount } ) ),
+                .map( s => ( { substitute: s.ingredient, amount: s.amount } ) ),
         },
     } );
 
@@ -112,7 +112,7 @@ const getSubstitutes = ( req, res ) => {
 
     CookingModel.findOne( { user: userId } )
         .populate( 'possibleSubstitution.original' )
-        .populate( 'possibleSubstitution.substitutes' )
+        .populate( 'possibleSubstitution.substitutes.substitute' )
         .then( ( cookingEvent ) => {
             logger.silly( `Populated CookingEvent: ${ cookingEvent._id }` );
             logger.silly( `Original ingredient: ${ cookingEvent.possibleSubstitution.original.name }` );
