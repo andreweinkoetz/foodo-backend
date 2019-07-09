@@ -210,12 +210,6 @@ const checkDoubleIngredientEntries = ( persRecipe, substituteId ) => {
     return foundIngredient;
 };
 
-const findOriginalIngredient = ( origRecipe, substituteId ) => {
-    const foundIngredient = origRecipe.ingredients
-        .find( ingredient => ingredient.ingredient === substituteId );
-    return foundIngredient;
-};
-
 const revertSubstitution = ( req, res ) => {
     const { historyId } = req.body;
     SubstitutionModel.findById( historyId )
@@ -248,39 +242,31 @@ const revertSubstitution = ( req, res ) => {
                 } )
                 .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
                 .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
-                .then( ( persRecipe ) => {
-                    const ingredient = persRecipe.personalizedRecipe.ingredients
+                .then( async ( persRecipe ) => {
+                    const revertI = persRecipe.personalizedRecipe.ingredients
                         .find( i => i.substitutionFor
                         && i.substitutionFor._id.toString() === historyId );
 
+                    const isInRecipe = persRecipe.personalizedRecipe.ingredients
+                        .find( i => i.ingredient === history.original._id );
 
-                    const originalIngredient = findOriginalIngredient(
-                        persRecipe.personalizedRecipe.origRecipe,
-                        history.substitute._id.toString(),
-                    );
-
-                    if ( originalIngredient ) {
-                        const oldIngredient = findOriginalIngredient(
-                            persRecipe.personalizedRecipe.origRecipe,
-                            history.original._id.toString(),
-                        );
-                        persRecipe.personalizedRecipe.ingredients
-                            .push( originalIngredient, oldIngredient );
-                        _.remove( persRecipe.personalizedRecipe.ingredients,
-                            i => i.substitutionFor._id.toString() === historyId );
-                        persRecipe.save();
+                    if ( isInRecipe ) {
+                        isInRecipe.amount += revertI.amount;
                     } else {
-                        _.map( persRecipe.personalizedRecipe.ingredients,
-                            ( i ) => {
-                                if ( i._id.toString() === ingredient._id.toString() ) {
-                                    i.ingredient = i.substitutionFor.original;
-                                    delete i.substitutionFor;
-                                }
-                            } );
-                        _.remove( persRecipe.personalizedRecipe.ingredients,
-                            i => i._id.toString() === ingredient._id.toString() );
-                        persRecipe.save();
+                        persRecipe.personalizedRecipe.ingredients
+                            .push( { amount: history.amount, ingredient: history.original._id } );
                     }
+
+                    if ( revertI.amount - history.amount <= 0 ) {
+                        _.remove( persRecipe.personalizedRecipe.ingredients,
+                            i => i.substitutionFor
+                            && i.substitutionFor._id.toString() === historyId );
+                    } else {
+                        revertI.amount -= history.amount;
+                        revertI.substitutionFor = undefined;
+                    }
+
+                    persRecipe.save();
 
                     return res.status( 200 )
                         .json( persRecipe );
@@ -328,6 +314,7 @@ const substituteIngredient = ( req, res ) => {
                             persRecipe: persRecipeId,
                             original: originalId,
                             substitute: substituteId,
+                            amount,
                         },
                     )
                     .then( ( subHistory ) => {

@@ -6,6 +6,7 @@ const SubstitutionSchema = new Schema( {
     persRecipe: { type: Schema.Types.ObjectId, ref: 'PersonalizedRecipe' },
     original: { type: Schema.Types.ObjectId, ref: 'Ingredient' },
     substitute: { type: Schema.Types.ObjectId, ref: 'Ingredient' },
+    amount: { type: Number, required: true },
 }, { collection: 'substitution' } );
 
 SubstitutionSchema.set( 'versionKey', false );
