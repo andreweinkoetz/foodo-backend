@@ -8,7 +8,7 @@ const RecipesController = require( '../controllers/recipe' );
 router.get( '/', RecipesController.getAllRecipes );
 router.get( '/:id', RecipesController.getRecipeById );
 router.post( '/', RecipesController.insertRecipe );
-router.get( '/:id/substitutes', checkAuthentication, RecipesController.substituteIngredients );
+router.get( '/:id/substitutes', checkAuthentication, RecipesController.getSubstitutions );
 router.put( '/:id/blocksubstitute', checkAuthentication, RecipesController.blockSubstitution );
 
 module.exports = router;

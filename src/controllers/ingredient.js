@@ -56,9 +56,9 @@ const setCategoryOfIngredient = ( req, res ) => {
 
 const setAllergiesOfIngredient = ( req, res ) => {
     IngredientModel.findById( { _id: req.body._id } )
-        .populate( 'notForAllergy' )
+        .populate( 'notForAllergies' )
         .then( ( ingredient ) => {
-            ingredient.notForAllergy = req.body.notForAllergy;
+            ingredient.notForAllergies = req.body.notForAllergies;
             ingredient.save();
             return res.status( 200 ).json( { msg: 'success' } );
         } );
