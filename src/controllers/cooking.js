@@ -137,12 +137,13 @@ const substituteOriginal = async ( req, res ) => {
     if ( !cookingEvent ) {
         logger.error( 'Event not found' );
     }
-    const persRecipeId = cookingEvent.persRecipe;
+    /* const persRecipeId = cookingEvent.persRecipe;
     const originalId = cookingEvent.possibleSubstitution.original;
     const substituteId = cookingEvent.possibleSubstitution
         .substitutes[ selectedNumber - 1 ].ingredient._id;
     const { amount } = cookingEvent.possibleSubstitution
         .substitutes[ selectedNumber - 1 ];
+        */
 
     // TODO do the same as in the new substitute recipe ingredient function
     res.status( 200 ).json( { msg: 'Success!' } );
