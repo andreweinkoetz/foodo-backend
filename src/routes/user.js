@@ -21,5 +21,7 @@ router.post( '/recipes', checkAuthentication, RecipeController.insertPersonalize
 router.get( '/recipes', checkAuthentication, RecipeController.getRecipesOfUser );
 router.get( '/recipes/:id', checkAuthentication, RecipeController.getSingleRecipeOfUser );
 router.put( '/recipes', checkAuthentication, RecipeController.updatePersonalizedRecipe );
+router.put( '/recipes/substitute', checkAuthentication, RecipeController.substituteIngredient );
+router.delete( '/recipes/substitute', checkAuthentication, RecipeController.revertSubstitution );
 
 module.exports = router;

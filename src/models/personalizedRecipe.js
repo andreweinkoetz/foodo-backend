@@ -21,6 +21,10 @@ const PersonalizedRecipeSchema = new Schema( {
                 type: Schema.Types.ObjectId,
                 ref: 'Ingredient',
             },
+            substitutionFor: {
+                type: Schema.Types.ObjectId,
+                ref: 'Substitution',
+            },
             amount: {
                 type: Number,
                 required: true,
