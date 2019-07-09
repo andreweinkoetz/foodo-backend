@@ -206,7 +206,7 @@ const updatePersonalizedRecipe = ( req, res ) => {
 
 const checkDoubleIngredientEntries = ( persRecipe, substituteId ) => {
     const foundIngredient = persRecipe.personalizedRecipe.ingredients
-        .find( ingredient => ingredient.ingredient === substituteId );
+        .find( ingredient => ingredient.ingredient._id.toString() === substituteId );
     return foundIngredient;
 };
 
@@ -230,15 +230,17 @@ const revertSubstitution = ( req, res ) => {
                 } )
                 .populate( {
                     path: 'personalizedRecipe.ingredients.ingredient',
-                    model: 'Ingredient',
                     populate: {
-                        path: 'ingredient.category',
+                        path: 'category',
                         model: 'Category',
                     },
                 } )
                 .populate( {
-                    path: 'personalizedRecipe.ingredients.substitutionFor',
-                    model: 'Substitution',
+                    path: 'personalizedRecipe.ingredients.ingredient',
+                    populate: {
+                        path: 'substitutionFor',
+                        model: 'Substitution',
+                    },
                 } )
                 .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
                 .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
@@ -248,19 +250,23 @@ const revertSubstitution = ( req, res ) => {
                         && i.substitutionFor._id.toString() === historyId );
 
                     const isInRecipe = persRecipe.personalizedRecipe.ingredients
-                        .find( i => i.ingredient === history.original._id );
+                        .find( i => i.ingredient
+                            ._id.toString() === history.original._id.toString() );
 
                     if ( isInRecipe ) {
                         isInRecipe.amount += revertI.amount;
                     } else {
+                        // we need it populated for the frontend
+                        const inserted = await IngredientModel.findById( history.original._id );
                         persRecipe.personalizedRecipe.ingredients
-                            .push( { amount: history.amount, ingredient: history.original._id } );
+                            .push( { amount: history.amount, ingredient: inserted } );
                     }
 
                     if ( revertI.amount - history.amount <= 0 ) {
-                        _.remove( persRecipe.personalizedRecipe.ingredients,
-                            i => i.substitutionFor
-                            && i.substitutionFor._id.toString() === historyId );
+                        persRecipe.personalizedRecipe.ingredients = persRecipe
+                            .personalizedRecipe.ingredients
+                            .filter( i => !i.substitutionFor
+                                        || i.substitutionFor._id.toString() !== historyId );
                     } else {
                         revertI.amount -= history.amount;
                         revertI.substitutionFor = undefined;
@@ -327,11 +333,10 @@ const substituteIngredient = ( req, res ) => {
                                 substitutionFor: subHistory._id,
                                 amount,
                             } );
-                            _.remove(
-                                persRecipe.personalizedRecipe.ingredients,
-                                ingredient => ingredient.ingredient._id.toString() === originalId,
-                            );
                         }
+                        persRecipe.personalizedRecipe.ingredients = persRecipe
+                            .personalizedRecipe.ingredients
+                            .filter( i => i.ingredient._id.toString() !== originalId );
                         persRecipe.save();
                         return res.status( 200 ).json( persRecipe );
                     } );
