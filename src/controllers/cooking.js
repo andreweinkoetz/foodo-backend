@@ -9,6 +9,8 @@ const startCooking = async ( req, res ) => {
     const { userId, clientId, recipeName } = req.body;
 
     logger.silly( 'Alexa sent us a start cooking request!' );
+    logger.silly( `Requesting user: ${ userId }` );
+    logger.silly( `Requested recipe: ${ recipeName }` );
 
     const recipe = await RecipeModel.findOne( { name: recipeName } );
     if ( !recipe ) {
@@ -125,7 +127,7 @@ const substituteOriginal = async ( req, res ) => {
     const { amount } = cookingEvent.possibleSubstitution
         .substitutes[ selectedNumber - 1 ];
 
-    // TODO do the same as in the new substiute recipe ingredient function
+    // TODO do the same as in the new substitute recipe ingredient function
     res.status( 200 ).json( { msg: 'Success!' } );
 };
 
