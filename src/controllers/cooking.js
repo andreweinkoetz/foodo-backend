@@ -82,7 +82,7 @@ const startCooking = async ( req, res ) => {
         .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' );
 
     const possibleSubstitutes = substitutor.getAlternativesForWorstIngredient( userRecipe );
-    logger.silly( `Possible substitutes: ${ possibleSubstitutes.map( s => s.name ) }` );
+    logger.silly( `Possible substitutes: ${ possibleSubstitutes }` );
 
 
     logger.silly( `Deleting all CookingEvents of user: ${ userId }` );
