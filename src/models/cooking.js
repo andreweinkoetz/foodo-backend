@@ -13,7 +13,16 @@ const CookingSchema = new Schema( {
     },
     possibleSubstitution: {
         original: { type: Schema.Types.ObjectId, ref: 'Ingredient' },
-        substitutes: [ { type: Schema.Types.ObjectId, ref: 'Ingredient' } ],
+        substitutes: [ {
+            substitute: {
+                type: Schema.Types.ObjectId,
+                ref: 'Ingredient',
+            },
+            amount: {
+                type: Number,
+                required: true,
+            },
+        } ],
     },
 }, { collection: 'cooking' } );
 

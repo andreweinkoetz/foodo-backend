@@ -5,7 +5,7 @@ const PersonalizedRecipeModel = require( '../models/personalizedRecipe' );
 const substitutor = require( '../algorithm/substitutor' );
 
 const startCooking = async ( req, res ) => {
-    const { recipeName, userId, clientId } = req.body;
+    const { userId, clientId, recipeName } = req.body;
 
     const recipe = await RecipeModel.findOne( { name: recipeName } );
     if ( !recipe ) {
@@ -15,7 +15,7 @@ const startCooking = async ( req, res ) => {
         .findOne( { 'personalizedRecipe.origRecipe': recipe._id, user: userId } );
     if ( !userRecipe ) {
         // we started cooking this recipe for the first time, create a user recipe
-        userRecipe = await new RecipeModel( {
+        userRecipe = await PersonalizedRecipeModel.create( {
             user: userId,
             client: clientId,
             personalizedRecipe: {
@@ -23,7 +23,7 @@ const startCooking = async ( req, res ) => {
                 ingredients: recipe.ingredients,
                 blockedSubstitutions: [],
             },
-        } ).create();
+        } );
     }
     userRecipe = await PersonalizedRecipeModel
         .findById( userRecipe._id )
@@ -79,7 +79,7 @@ const startCooking = async ( req, res ) => {
         .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' );
 
     // todo: call https://github.com/MrMuchacho/foodo_substitutions/issues/10 instead
-    const possibleSubstiutes = substitutor.calculateSubstitutions( userRecipe );
+    const possibleSubstiutes = substitutor.getAlternativesForWorstIngredient( userRecipe );
 
     // delete all old CookingEvents of user
     CookingModel.deleteMany( { user: userId } );
@@ -90,7 +90,8 @@ const startCooking = async ( req, res ) => {
         persRecipe: userRecipe._id,
         possibleSubstitution: {
             original: possibleSubstiutes.original._id,
-            substitutes: possibleSubstiutes.substitutes,
+            substitutes: possibleSubstiutes.substitutes
+                .map( s => ( { ingredient: s.ingredient, amount: s.amount } ) ),
         },
     } );
 
@@ -98,7 +99,8 @@ const startCooking = async ( req, res ) => {
 };
 
 const substituteOriginal = async ( req, res ) => {
-    const { userId, selectedNumber } = req.body;
+    const { userId } = req.body;
+    const { selectedNumber } = req.params;
 
     if ( selectedNumber < 1 || selectedNumber > 3 ) {
         throw Error( 'Wrong User Input' );
@@ -122,11 +124,7 @@ const substituteOriginal = async ( req, res ) => {
 };
 
 const blockSubstitution = async ( req, res ) => {
-    const { userId, selectedNumber } = req.body;
-
-    if ( selectedNumber < 1 || selectedNumber > 3 ) {
-        throw Error( 'Wrong User Input' );
-    }
+    const { userId } = req.body;
 
     const cookingEvent = await CookingModel
         .findOne( { user: userId } )
