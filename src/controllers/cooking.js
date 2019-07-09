@@ -3,13 +3,16 @@ const CookingModel = require( '../models/cooking' );
 const RecipeModel = require( '../models/recipe' );
 const PersonalizedRecipeModel = require( '../models/personalizedRecipe' );
 const substitutor = require( '../algorithm/substitutor' );
+const logger = require( '../logger' ).getLogger( 'CookingController' );
 
 const startCooking = async ( req, res ) => {
     const { userId, clientId, recipeName } = req.body;
 
+    logger.silly( 'Alexa sent us a start cooking request!' );
+
     const recipe = await RecipeModel.findOne( { name: recipeName } );
     if ( !recipe ) {
-        throw Error( 'Recipe not found' );
+        logger.error( 'Recipe not found' );
     }
     let userRecipe = await PersonalizedRecipeModel
         .findOne( { 'personalizedRecipe.origRecipe': recipe._id, user: userId } );
@@ -78,24 +81,27 @@ const startCooking = async ( req, res ) => {
         .populate( 'personalizedRecipe.blockedSubstitutions.orig' )
         .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' );
 
-    // todo: call https://github.com/MrMuchacho/foodo_substitutions/issues/10 instead
-    const possibleSubstiutes = substitutor.getAlternativesForWorstIngredient( userRecipe );
+    const possibleSubstitutes = substitutor.getAlternativesForWorstIngredient( userRecipe );
+    logger.silly( `Possible substitutes: ${ possibleSubstitutes.map( s => s.name ) }` );
 
+
+    logger.silly( `Deleting all CookingEvents of user: ${ userId }` );
     // delete all old CookingEvents of user
-    CookingModel.deleteMany( { user: userId } );
+    CookingModel.deleteMany( { user: userId } ).then( err => logger.error( err ) );
 
+    logger.silly( 'Creating new CookingEvent' );
     // write cooking event to database
     CookingModel.create( {
         user: userId,
         persRecipe: userRecipe._id,
         possibleSubstitution: {
-            original: possibleSubstiutes.original._id,
-            substitutes: possibleSubstiutes.substitutes
+            original: possibleSubstitutes.original._id,
+            substitutes: possibleSubstitutes.substitutes
                 .map( s => ( { ingredient: s.ingredient, amount: s.amount } ) ),
         },
     } );
 
-    res.status( 200 ).json( { possibleSubstiutes } );
+    res.status( 200 ).json( { possibleSubstitutes } );
 };
 
 const substituteOriginal = async ( req, res ) => {
@@ -103,14 +109,14 @@ const substituteOriginal = async ( req, res ) => {
     const { selectedNumber } = req.params;
 
     if ( selectedNumber < 1 || selectedNumber > 3 ) {
-        throw Error( 'Wrong User Input' );
+        logger.error( 'Wrong User Input' );
     }
 
     const cookingEvent = await CookingModel
         .findOne( { user: userId } )
         .populate( 'possibleSubstitution.substitutes.ingredient' );
     if ( !cookingEvent ) {
-        throw Error( 'Event not found' );
+        logger.error( 'Event not found' );
     }
     const persRecipeId = cookingEvent.persRecipe;
     const originalId = cookingEvent.possibleSubstitution.original;
@@ -130,7 +136,7 @@ const blockSubstitution = async ( req, res ) => {
         .findOne( { user: userId } )
         .populate( 'possibleSubstitution.substitutes.ingredient' );
     if ( !cookingEvent ) {
-        throw Error( 'Event not found' );
+        logger.error( 'Event not found' );
     }
 
     // TODO do the same as in the new block recipe ingredient function
