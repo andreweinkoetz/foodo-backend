@@ -86,7 +86,6 @@ const startCooking = async ( req, res ) => {
     const possibleSubstitutes = substitutor.getAlternativesForWorstIngredient( userRecipe );
     logger.silly( `Possible substitutes: ${ possibleSubstitutes }` );
 
-
     logger.silly( `Deleting all CookingEvents of user: ${ userId }` );
     // delete all old CookingEvents of user
     await CookingModel
@@ -99,8 +98,7 @@ const startCooking = async ( req, res ) => {
         persRecipe: userRecipe._id,
         possibleSubstitution: {
             original: possibleSubstitutes.original._id,
-            substitutes: possibleSubstitutes.substitutes
-                .map( s => ( { substitute: s.ingredient, amount: s.amount } ) ),
+            substitutes: possibleSubstitutes.substitutes,
         },
     } );
 
