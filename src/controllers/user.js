@@ -1,5 +1,6 @@
 const UserModel = require( '../models/user' );
 const TokenModel = require( '../models/token' );
+const logger = require( '../logger' ).getLogger( 'UserController' );
 
 const setGoal = ( req, res ) => UserModel
     .findByIdAndUpdate( { _id: req.body.userId }, { goal: req.body.goal }, { new: true } )
@@ -68,7 +69,7 @@ const setLocale = ( req, res ) => UserModel
 
 const me = ( req, res ) => {
     const { accessToken } = req.body.token.token;
-
+    logger.silly( `Endpoint: /me called with token: ${ accessToken }` );
     return TokenModel
         .findOne( { accessToken } )
         .populate( 'user' )
