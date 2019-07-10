@@ -148,9 +148,16 @@ const substituteIngredient = ( persRecipe, substitute, original, amount ) => {
                     amount,
                 } );
             }
+
+            logger.silly( `Before removing ingredient: ${ persRecipe.personalizedRecipe.ingredients.length }` );
+
+
             persRecipe.personalizedRecipe.ingredients = persRecipe
                 .personalizedRecipe.ingredients
-                .filter( i => i.ingredient.toString() !== original._id );
+                .filter( i => i.ingredient.toString() !== original._id.toString() );
+
+            logger.silly( `After removing ingredient: ${ persRecipe.personalizedRecipe.ingredients.length }` );
+
             persRecipe.save();
         } );
 };
