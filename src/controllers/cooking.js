@@ -214,7 +214,7 @@ const blockSubstitution = async ( req, res ) => {
             .blockedSubstitutions
             .push( { orig: cookingEvent.possibleSubstitution.original, blockedSubs: [] } );
 
-        cookingEvent.save();
+        cookingEvent.persRecipe.save();
     }
 
     return res.status( 200 ).json( { msg: 'Success!' } );
