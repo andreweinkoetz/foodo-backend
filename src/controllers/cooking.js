@@ -189,7 +189,7 @@ const substituteOriginal = async ( req, res ) => {
                 path: 'substitutes',
                 populate: {
                     path: 'substitute',
-                    mode: 'Ingredient',
+                    model: 'Ingredient',
                 },
             },
         } )
@@ -197,7 +197,7 @@ const substituteOriginal = async ( req, res ) => {
             path: 'possibleSubstitution',
             populate: {
                 path: 'original',
-                mode: 'Ingredient',
+                model: 'Ingredient',
             },
         } );
 
