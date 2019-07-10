@@ -199,9 +199,9 @@ const substituteOriginal = async ( req, res ) => {
     logger.silly( `Cooking Event found: ${ JSON.stringify( cookingEvent ) }` );
 
     substituteIngredient( cookingEvent.persRecipe,
-        cookingEvent.possibleSubstitution[ 0 ][ selectedNumber - 1 ].substitute,
-        cookingEvent.possibleSubstitution[ 0 ].original,
-        cookingEvent.possibleSubstitution[ 0 ][ selectedNumber - 1 ].amount );
+        cookingEvent.possibleSubstitution.substitutes[ selectedNumber - 1 ].substitute,
+        cookingEvent.possibleSubstitution.original,
+        cookingEvent.possibleSubstitution.substitutes[ selectedNumber - 1 ].amount );
 
 
     /* const persRecipeId = cookingEvent.persRecipe;
