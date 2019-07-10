@@ -171,17 +171,8 @@ const substituteOriginal = async ( req, res ) => {
         .findOne( { user: userId } )
         .populate( 'persRecipe' )
         .populate( {
-            path: 'persRecipe',
-            populate: {
-                path: 'personalizedRecipe',
-                populate: {
-                    path: 'ingredients',
-                    populate: {
-                        path: 'ingredient',
-                        model: 'Ingredient',
-                    },
-                },
-            },
+            path: 'persRecipe.personalizedRecipe.ingredients.ingredient',
+            model: 'Ingredient',
         } )
         .populate( {
             path: 'possibleSubstitution.substitutes.substitute',
