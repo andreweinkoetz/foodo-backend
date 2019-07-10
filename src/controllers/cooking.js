@@ -202,8 +202,7 @@ const substituteOriginal = async ( req, res ) => {
         logger.error( 'Event not found' );
     }
 
-    logger.silly( `Cooking Event found: ${ cookingEvent }` );
-    logger.silly( `Possible substitutes: ${ cookingEvent.possibleSubstitution.substitutes }` );
+    logger.silly( `Cooking Event found: ${ JSON.stringify( cookingEvent ) }` );
 
     substituteIngredient( cookingEvent.persRecipe,
         cookingEvent.possibleSubstitution.substitutes[ selectedNumber - 1 ].substitute,
