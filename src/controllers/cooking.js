@@ -1,7 +1,8 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars,no-param-reassign */
 const CookingModel = require( '../models/cooking' );
 const RecipeModel = require( '../models/recipe' );
 const PersonalizedRecipeModel = require( '../models/personalizedRecipe' );
+const SubstitutionModel = require( '../models/substitution' );
 const substitutor = require( '../algorithm/substitutor' );
 const logger = require( '../logger' ).getLogger( 'CookingController' );
 
@@ -119,6 +120,41 @@ const getSubstitutes = ( req, res ) => {
         } );
 };
 
+const checkDoubleIngredientEntries = ( persRecipe, substituteId ) => {
+    const foundIngredient = persRecipe.personalizedRecipe.ingredients
+        .find( ingredient => ingredient.ingredient._id.toString() === substituteId );
+    return foundIngredient;
+};
+
+const substituteIngredient = ( persRecipe, substitute, original, amount ) => {
+    const doubleIngredient = checkDoubleIngredientEntries( persRecipe, substitute._id.toString() );
+    SubstitutionModel
+        .create(
+            {
+                persRecipe: persRecipe._id,
+                original: original._id,
+                substitute: substitute._id,
+                amount,
+            },
+        )
+        .then( ( subHistory ) => {
+            if ( doubleIngredient ) {
+                doubleIngredient.amount += amount;
+                doubleIngredient.substitutionFor = subHistory._id;
+            } else {
+                persRecipe.personalizedRecipe.ingredients.push( {
+                    ingredient: substitute._id,
+                    substitutionFor: subHistory._id,
+                    amount,
+                } );
+            }
+            persRecipe.personalizedRecipe.ingredients = persRecipe
+                .personalizedRecipe.ingredients
+                .filter( i => i.ingredient._id.toString() !== original._id );
+            persRecipe.save();
+        } );
+};
+
 const substituteOriginal = async ( req, res ) => {
     logger.silly( 'Entering substitute original function.' );
 
@@ -133,10 +169,47 @@ const substituteOriginal = async ( req, res ) => {
 
     const cookingEvent = await CookingModel
         .findOne( { user: userId } )
-        .populate( 'possibleSubstitution.substitutes.ingredient' );
+        .populate( 'persRecipe' )
+        .populate( {
+            path: 'persRecipe',
+            populate: {
+                path: 'personalizedRecipe',
+                populate: {
+                    path: 'ingredients',
+                    populate: {
+                        path: 'ingredient',
+                        model: 'Ingredient',
+                    },
+                },
+            },
+        } )
+        .populate( {
+            path: 'possibleSubstitution',
+            populate: {
+                path: 'substitutes',
+                populate: {
+                    path: 'substitute',
+                    mode: 'Ingredient',
+                },
+            },
+        } )
+        .populate( {
+            path: 'possibleSubstitution',
+            populate: {
+                path: 'original',
+                mode: 'Ingredient',
+            },
+        } );
+
     if ( !cookingEvent ) {
         logger.error( 'Event not found' );
     }
+
+    substituteIngredient( cookingEvent.persRecipe,
+        cookingEvent.possibleSubstitution.substitutes[ selectedNumber - 1 ].substitute,
+        cookingEvent.possibleSubstitution.original,
+        cookingEvent.possibleSubstitution.substitutes[ selectedNumber - 1 ].amount );
+
     /* const persRecipeId = cookingEvent.persRecipe;
     const originalId = cookingEvent.possibleSubstitution.original;
     const substituteId = cookingEvent.possibleSubstitution
@@ -144,8 +217,6 @@ const substituteOriginal = async ( req, res ) => {
     const { amount } = cookingEvent.possibleSubstitution
         .substitutes[ selectedNumber - 1 ];
         */
-
-    // TODO do the same as in the new substitute recipe ingredient function
     res.status( 200 ).json( { msg: 'Success!' } );
 };
 
