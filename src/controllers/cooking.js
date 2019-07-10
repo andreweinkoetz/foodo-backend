@@ -184,13 +184,10 @@ const substituteOriginal = async ( req, res ) => {
             },
         } )
         .populate( {
-            path: 'possibleSubstitution',
+            path: 'possibleSubstitution.substitutes',
             populate: {
-                path: 'substitutes',
-                populate: {
-                    path: 'substitute',
-                    model: 'Ingredient',
-                },
+                path: 'substitute',
+                model: 'Ingredient',
             },
         } )
         .populate( {
