@@ -20,6 +20,9 @@ const convertTokenAlexa = async ( token ) => {
     // alexaToken.refreshToken = undefined;
     alexaToken.expires_in = token.accessTokenExpiresAt.getTime() - new Date().getTime();
     alexaToken.token_type = 'Bearer';
+
+    logger.debug( `Alexa-Token: ${ alexaToken }` );
+
     return alexaToken;
 };
 
@@ -40,6 +43,7 @@ const getUser = async ( username, password ) => {
 
 const getClient = async ( clientId, clientSecret ) => {
     logger.debug( 'getClient-function called' );
+    logger.debug( ` Used clientId: ${ clientId }` );
     // Checks if there's a clientId with matching clientSecret.
     const client = await ClientModel.findOne( { clientId } ).exec();
     if ( clientSecret ) {
@@ -68,6 +72,8 @@ const saveToken = async ( token, client, user ) => {
     const returnToken = lodash.cloneDeep( token );
     returnToken.user = user;
     returnToken.client = client;
+
+    logger.debug( `Token: ${ returnToken }` );
 
     if ( client.clientId === 'alexa' ) {
         return convertTokenAlexa( returnToken );
