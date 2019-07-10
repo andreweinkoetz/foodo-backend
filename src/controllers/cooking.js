@@ -218,7 +218,7 @@ const blockSubstitution = async ( req, res ) => {
         cookingEvent.persRecipe
             .personalizedRecipe
             .blockedSubstitutions
-            .push( { orig: cookingEvent.possibleSubstitution.original, blockedSubs: [] } );
+            .push( { orig: cookingEvent.possibleSubstitution.original } );
 
         cookingEvent.persRecipe.save();
     }

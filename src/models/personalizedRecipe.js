@@ -35,7 +35,6 @@ const PersonalizedRecipeSchema = new Schema( {
                 type: Schema.Types.ObjectId,
                 ref: 'Ingredient',
             },
-            blockedSubs: [ { type: Schema.Types.ObjectId, ref: 'Ingredient' } ],
         } ],
 
     },
