@@ -167,7 +167,7 @@ const substituteOriginal = async ( req, res ) => {
         logger.error( 'Wrong User Input' );
     }
 
-    const cookingEvent = await CookingModel
+    const cookingEventOld = await CookingModel
         .findOne( { user: userId } )
         .populate( 'persRecipe' )
         .populate( {
@@ -196,18 +196,20 @@ const substituteOriginal = async ( req, res ) => {
                 path: 'original',
                 model: 'Ingredient',
             },
+        } )
+        .then( ( cookingEvent ) => {
+            logger.silly( `Cooking Event created: ${ JSON.stringify( cookingEvent ) }` );
+
+            substituteIngredient( cookingEvent.persRecipe,
+                cookingEvent.possibleSubstitution.substitutes[ selectedNumber - 1 ].substitute,
+                cookingEvent.possibleSubstitution.original,
+                cookingEvent.possibleSubstitution.substitutes[ selectedNumber - 1 ].amount );
         } );
 
-    if ( !cookingEvent ) {
+    if ( !cookingEventOld ) {
         logger.error( 'Event not found' );
     }
 
-    logger.silly( `Cooking Event found: ${ JSON.stringify( cookingEvent ) }` );
-
-    substituteIngredient( cookingEvent.persRecipe,
-        cookingEvent.possibleSubstitution.substitutes[ selectedNumber - 1 ].substitute,
-        cookingEvent.possibleSubstitution.original,
-        cookingEvent.possibleSubstitution.substitutes[ selectedNumber - 1 ].amount );
 
     /* const persRecipeId = cookingEvent.persRecipe;
     const originalId = cookingEvent.possibleSubstitution.original;
