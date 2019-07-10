@@ -5,6 +5,7 @@ const OAuth2Server = require( 'oauth2-server' );
 const cors = require( 'cors' );
 const oauthModel = require( './oauth' );
 const error = require( './controllers/utilities/error' );
+const logger = require( './logger' ).getLogger( 'MIDDLEWARE' );
 
 const { Request, Response } = OAuth2Server;
 
@@ -50,6 +51,8 @@ const authorize = ( req, res ) => {
 };
 
 const checkAuthentication = ( req, res, next ) => {
+    logger.debug( `Checking authentication for token: ${ JSON.stringify( req.headers ) }` );
+
     const request = new Request( req );
     const response = new Response( res );
 
