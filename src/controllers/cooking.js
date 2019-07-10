@@ -196,9 +196,9 @@ const substituteOriginal = async ( req, res ) => {
 
     return res.status( 200 ).json(
         {
-            original: cookingEvent
+            ingredient: cookingEvent
                 .possibleSubstitution.substitutes[ selectedNumber - 1 ].substitute.name,
-            ingredient: cookingEvent.possibleSubstitution.original.name,
+            original: cookingEvent.possibleSubstitution.original.name,
         },
     );
 };
