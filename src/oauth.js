@@ -84,7 +84,7 @@ const saveToken = async ( token, client, user ) => {
 
 const getAccessToken = async ( accessToken ) => {
     logger.debug( 'getAccessToken called' );
-
+    logger.silly( `Token:${ JSON.stringify( accessToken ) }` );
     const token = await TokenModel.findOne( { accessToken } ).populate( 'user' ).populate( 'client' ).exec();
 
     token.user.password = undefined;
