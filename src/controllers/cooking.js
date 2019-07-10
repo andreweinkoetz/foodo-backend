@@ -122,7 +122,7 @@ const getSubstitutes = ( req, res ) => {
 
 const checkDoubleIngredientEntries = ( persRecipe, substituteId ) => {
     const foundIngredient = persRecipe.personalizedRecipe.ingredients
-        .find( ingredient => ingredient.ingredient._id.toString() === substituteId );
+        .find( ingredient => ingredient.ingredient.toString() === substituteId );
     return foundIngredient;
 };
 
@@ -150,7 +150,7 @@ const substituteIngredient = ( persRecipe, substitute, original, amount ) => {
             }
             persRecipe.personalizedRecipe.ingredients = persRecipe
                 .personalizedRecipe.ingredients
-                .filter( i => i.ingredient._id.toString() !== original._id );
+                .filter( i => i.ingredient.toString() !== original._id );
             persRecipe.save();
         } );
 };
