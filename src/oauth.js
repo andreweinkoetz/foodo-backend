@@ -55,6 +55,14 @@ const saveToken = async ( token, client, user ) => {
     savingToken.user = user._id;
     savingToken.client = client._id;
 
+    // workaround for alexa tokens which do not reuqest refresh token
+    if ( client.clientId === 'alexa' ) {
+        savingToken.accessTokenExpiresAt
+            .setFullYear( savingToken.accessTokenExpiresAt.getFullYear() + 1 );
+        savingToken.refreshTokenExpiresAt
+            .setFullYear( savingToken.refreshTokenExpiresAt.getFullYear() + 1 );
+    }
+
     await TokenModel.create( savingToken );
 
     const returnToken = lodash.cloneDeep( token );
