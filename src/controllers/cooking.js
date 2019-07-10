@@ -113,8 +113,6 @@ const getSubstitutes = ( req, res ) => {
         .populate( 'possibleSubstitution.original' )
         .populate( 'possibleSubstitution.substitutes.substitute' )
         .then( ( cookingEvent ) => {
-            logger.silly( `Populated CookingEvent: ${ cookingEvent._id }` );
-            logger.silly( `Original ingredient: ${ cookingEvent.possibleSubstitution.original.name }` );
             cookingEvent.possibleSubstitution.substitutes.map( s => logger.silly( s.name ) );
             return res.status( 200 ).json( cookingEvent.possibleSubstitution.substitutes );
         } );
@@ -149,14 +147,9 @@ const substituteIngredient = ( persRecipe, substitute, original, amount ) => {
                 } );
             }
 
-            logger.silly( `Before removing ingredient: ${ persRecipe.personalizedRecipe.ingredients.length }` );
-
-
             persRecipe.personalizedRecipe.ingredients = persRecipe
                 .personalizedRecipe.ingredients
                 .filter( i => i.ingredient.toString() !== original._id.toString() );
-
-            logger.silly( `After removing ingredient: ${ persRecipe.personalizedRecipe.ingredients.length }` );
 
             persRecipe.save();
         } );
@@ -201,15 +194,7 @@ const substituteOriginal = async ( req, res ) => {
         cookingEvent.possibleSubstitution.original,
         cookingEvent.possibleSubstitution.substitutes[ selectedNumber - 1 ].amount );
 
-
-    /* const persRecipeId = cookingEvent.persRecipe;
-    const originalId = cookingEvent.possibleSubstitution.original;
-    const substituteId = cookingEvent.possibleSubstitution
-        .substitutes[ selectedNumber - 1 ].ingredient._id;
-    const { amount } = cookingEvent.possibleSubstitution
-        .substitutes[ selectedNumber - 1 ];
-        */
-    res.status( 200 ).json( { msg: 'Success!' } );
+    return res.status( 200 ).json( { msg: 'Success!' } );
 };
 
 const blockSubstitution = async ( req, res ) => {
@@ -217,14 +202,20 @@ const blockSubstitution = async ( req, res ) => {
 
     const cookingEvent = await CookingModel
         .findOne( { user: userId } )
-        .populate( 'possibleSubstitution.substitutes.ingredient' );
+        .populate( 'persRecipe' );
+
+    logger.silly( `Cooking Event: ${ JSON.stringify( cookingEvent ) }` );
+
     if ( !cookingEvent ) {
         logger.error( 'Event not found' );
+    } else {
+        cookingEvent.persRecipe
+            .personalizedRecipe
+            .blockedSubstitutions
+            .push( { orig: cookingEvent.possibleSubstitution.original, blockedSubs: [] } );
     }
 
-    // TODO do the same as in the new block recipe ingredient function
-
-    res.status( 200 ).json( { msg: 'Success!' } );
+    return res.status( 200 ).json( { msg: 'Success!' } );
 };
 
 module.exports = {
