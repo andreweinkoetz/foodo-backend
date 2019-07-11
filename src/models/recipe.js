@@ -16,6 +16,10 @@ const RecipeSchema = new Schema( {
         type: String,
         required: true,
     },
+    difficulty: {
+        type: String,
+        enum: [ 'Easy', 'Medium', 'Difficult' ],
+    },
     ingredients: [ {
         ingredient: {
             type: Schema.Types.ObjectId,
