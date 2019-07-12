@@ -30,12 +30,12 @@ const PersonalizedRecipeSchema = new Schema( {
                 required: true,
             },
         } ],
-        blockedSubstitutions: [ {
-            orig: {
+        blockedSubstitutions: [
+            {
                 type: Schema.Types.ObjectId,
                 ref: 'Ingredient',
             },
-        } ],
+        ],
 
     },
 }, { collection: 'personalizedRecipe' } );
