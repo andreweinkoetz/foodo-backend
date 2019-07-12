@@ -92,6 +92,11 @@ const startCooking = async ( req, res ) => {
     await CookingModel
         .deleteMany( { user: userId } ).then( () => logger.silly( 'Deletion successful.' ) );
 
+    if ( !possibleSubstitutes ) {
+        logger.silly( 'No substitutes found!' );
+        res.status( 200 ).json( { undefined } );
+    }
+
     logger.silly( 'Creating new CookingEvent' );
     // write cooking event to database
     CookingModel.create( {
