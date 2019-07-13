@@ -3,6 +3,7 @@
  */
 const USER_NOT_FOUND = "Cannot set property 'password' of null";
 const PASSWORD_WRONG = 'Invalid grant: user credentials are invalid';
+const REFRESH_TOKEN_EXPIRED = 'Invalid grant: refresh token has expired';
 
 
 /**
@@ -66,6 +67,16 @@ const generateAndSendErrorMessage = ( res, err ) => {
             message: 'Password wrong.',
         } );
     }
+    if ( err.message === REFRESH_TOKEN_EXPIRED ) {
+        res.status( 400 ).json( {
+            error: 'Bad Request',
+            message: 'Refresh Token has expired.',
+        } );
+    }
+    res.status( 400 ).json( {
+        error: 'Bad Request',
+        message: err.message,
+    } );
 };
 
 module.exports = {
