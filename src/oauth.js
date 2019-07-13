@@ -65,6 +65,9 @@ const saveToken = async ( token, client, user ) => {
             .setFullYear( savingToken.accessTokenExpiresAt.getFullYear() + 1 );
         savingToken.refreshTokenExpiresAt
             .setFullYear( savingToken.refreshTokenExpiresAt.getFullYear() + 1 );
+    } else {
+        savingToken.refreshTokenExpiresAt
+            .setDate( savingToken.refreshTokenExpiresAt + 7 );
     }
 
     await TokenModel.create( savingToken );
@@ -118,7 +121,7 @@ const getRefreshToken = async ( refreshToken ) => {
     // Check if this refresh token exists.
     const token = await TokenModel.findOne( { refreshToken } ).populate( 'user' ).populate( 'client' ).exec();
 
-    return ( new Date() > token.refreshTokenExpiresAt ) ? undefined : token;
+    return token;
 };
 
 const revokeAuthorizationCode = async ( code ) => {
