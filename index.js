@@ -9,6 +9,7 @@ const ingredients = require( './src/routes/ingredient' );
 const user = require( './src/routes/user' );
 const profile = require( './src/routes/profile' );
 const cooking = require( './src/routes/cooking' );
+const subscription = require( './src/routes/subscription' );
 const logger = require( './src/logger' ).getLogger( 'index' );
 
 // SECTION: Misc.
@@ -27,6 +28,7 @@ app.use( '/ingredients', ingredients );
 app.use( '/user', user );
 app.use( '/cooking', cooking );
 app.use( '', profile );
+app.use( '/subscription', subscription );
 
 mongoose.connect( process.env.MONGODB_URI, { useNewUrlParser: true } ).then( () => {
     // Initialize cache

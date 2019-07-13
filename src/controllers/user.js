@@ -7,6 +7,11 @@ const setGoal = ( req, res ) => UserModel
     .select( '-password' )
     .then( user => res.status( 200 ).json( user ) );
 
+const setLevel = ( req, res ) => UserModel
+    .findByIdAndUpdate( { _id: req.body.userId }, { level: req.body.level }, { new: true } )
+    .select( '-password' )
+    .then( user => res.status( 200 ).json( user ) );
+
 const setLifestyle = ( req, res ) => UserModel
     .findByIdAndUpdate( { _id: req.body.userId }, { lifestyle: req.body.lifestyle }, { new: true } )
     .select( '-password' )
@@ -84,6 +89,7 @@ const me = ( req, res ) => {
 
 module.exports = {
     setGoal,
+    setLevel,
     setLifestyle,
     setDislikes,
     setAllergies,

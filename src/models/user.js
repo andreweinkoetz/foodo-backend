@@ -22,6 +22,12 @@ const UserSchema = new Schema( {
         type: String,
         required: true,
     },
+    level: {
+        type: String,
+        required: true,
+        enum: [ 'free', 'subscribed', 'admin' ],
+        default: 'free',
+    },
     allergies: [ { type: Schema.Types.ObjectId, ref: 'Allergy' } ],
     lifestyle: { type: Schema.Types.ObjectId, ref: 'Lifestyle' },
     dislikes: [ { type: Schema.Types.ObjectId, ref: 'Ingredient' } ],

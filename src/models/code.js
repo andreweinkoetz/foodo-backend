@@ -22,5 +22,4 @@ const CodeSchema = new Schema( {
 
 CodeSchema.set( 'versionKey', false );
 
-// Export the Movie model
 module.exports = mongoose.model( 'Code', CodeSchema );
