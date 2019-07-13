@@ -16,7 +16,7 @@ const SubscriptionSchema = new Schema( {
         required: true,
     },
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-}, { collection: 'Subscription' } );
+}, { collection: 'subscription' } );
 
 SubscriptionSchema.set( 'versionKey', false );
 SubscriptionSchema.set( 'timestamps', true );
