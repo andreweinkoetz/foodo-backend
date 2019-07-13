@@ -5,7 +5,7 @@ const router = express.Router();
 
 const SubscriptionController = require( '../controllers/subscription' );
 
-router.get( '/create', SubscriptionController.createSubscription );
-router.get( '/cancel', SubscriptionController.cancelSubscription );
+router.post( '/create', SubscriptionController.createSubscription );
+router.post( '/cancel', SubscriptionController.cancelSubscription );
 
 module.exports = router;
