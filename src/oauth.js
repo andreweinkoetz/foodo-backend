@@ -64,10 +64,10 @@ const saveToken = async ( token, client, user ) => {
         savingToken.accessTokenExpiresAt
             .setFullYear( savingToken.accessTokenExpiresAt.getFullYear() + 1 );
         savingToken.refreshTokenExpiresAt
-            .setFullYear( savingToken.refreshTokenExpiresAt.getFullYear() + 1 );
+            .setFullYear( savingToken.refreshTokenExpiresAt.getFullYear() + 2 );
     } else {
         savingToken.refreshTokenExpiresAt
-            .setDate( savingToken.refreshTokenExpiresAt + 7 );
+            .setDate( savingToken.refreshTokenExpiresAt.getDate() + 7 );
     }
 
     await TokenModel.create( savingToken );
