@@ -9,5 +9,6 @@ router.post( '/start', checkAuthentication, CookingController.startCooking );
 router.get( '/substitutes', checkAuthentication, CookingController.getSubstitutes );
 router.get( '/substitute/:selectedNumber', checkAuthentication, CookingController.substituteOriginal );
 router.post( '/block', checkAuthentication, CookingController.blockSubstitution );
+router.get( '/nutriscore', checkAuthentication, CookingController.calculateNutriScore );
 
 module.exports = router;

@@ -95,6 +95,11 @@ const startCooking = async ( req, res ) => {
     if ( !possibleSubstitutes ) {
         logger.silly( 'No substitutes found!' );
         res.status( 200 ).json( { undefined } );
+        return CookingModel.create( {
+            user: userId,
+            persRecipe: userRecipe._id,
+            possibleSubstitution: undefined,
+        } );
     }
 
     logger.silly( 'Creating new CookingEvent' );
@@ -231,9 +236,55 @@ const blockSubstitution = async ( req, res ) => {
     return res.status( 200 ).json( { msg: 'Success!' } );
 };
 
+const calculateNutriScore = async ( req, res ) => {
+    const { userId } = req.body;
+
+    const cookingEvent = await CookingModel
+        .findOne( { user: userId } ).exec();
+
+    PersonalizedRecipeModel.findById( cookingEvent.persRecipe )
+        .populate( {
+            path: 'personalizedRecipe.origRecipe',
+            populate: {
+                path: 'ingredients.ingredient',
+                model: 'Ingredient',
+                populate: {
+                    path: 'category',
+                    model: 'Category',
+                },
+            },
+        } )
+        .populate( {
+            path: 'personalizedRecipe.ingredients.ingredient',
+            populate: {
+                path: 'category',
+                model: 'Category',
+            },
+        } )
+        .then( ( r ) => {
+            const oldValues = substitutor
+                .calculateNutritionValuesOfIngredientsList(
+                    r.personalizedRecipe.origRecipe.ingredients,
+                );
+            const oldScore = substitutor
+                .mapNutriScoreToABCDE( substitutor.calculateNutriScore( oldValues, 'Recipe' ) );
+
+            const newValues = substitutor
+                .calculateNutritionValuesOfIngredientsList( r.personalizedRecipe.ingredients );
+
+            const newScore = substitutor
+                .mapNutriScoreToABCDE( substitutor.calculateNutriScore( newValues, 'Recipe' ) );
+
+            res.status( 200 ).send( {
+                oldValues, oldScore, newValues, newScore,
+            } );
+        } );
+};
+
 module.exports = {
     startCooking,
     substituteOriginal,
     blockSubstitution,
     getSubstitutes,
+    calculateNutriScore,
 };
