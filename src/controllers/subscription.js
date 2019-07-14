@@ -21,7 +21,7 @@ const subscribeUser = async ( req, res ) => {
     const { subscriptionId, userId } = req.body;
     const subscription = await SubscriptionModel
         .findOneAndUpdate( { paypalSubscriptionId: subscriptionId, active: true },
-            { user: userId } ).exec();
+            { user: userId }, { new: true } ).exec();
 
     if ( !subscription ) {
         return res.sendStatus( 404 );
