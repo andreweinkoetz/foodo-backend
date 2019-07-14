@@ -95,6 +95,11 @@ const startCooking = async ( req, res ) => {
     if ( !possibleSubstitutes ) {
         logger.silly( 'No substitutes found!' );
         res.status( 200 ).json( { undefined } );
+        return CookingModel.create( {
+            user: userId,
+            persRecipe: userRecipe._id,
+            possibleSubstitution: undefined,
+        } );
     }
 
     logger.silly( 'Creating new CookingEvent' );
