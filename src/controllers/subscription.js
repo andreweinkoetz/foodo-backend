@@ -20,14 +20,12 @@ const subscribeUser = async ( req, res ) => {
     logger.silly( 'Subscription add user process started.' );
     const { subscriptionId, userId } = req.body;
     const subscription = await SubscriptionModel
-        .find( { paypalSubscriptionId: subscriptionId, active: true } ).exec();
+        .findOneAndUpdate( { paypalSubscriptionId: subscriptionId, active: true },
+            { user: userId } ).exec();
 
     if ( !subscription ) {
         return res.sendStatus( 404 );
     }
-
-    subscription.user = userId;
-    subscription.save();
 
     UserModel.findOneAndUpdate( { _id: userId }, { level: 'subscribed' } ).exec();
     return res.sendStatus( 200 );
