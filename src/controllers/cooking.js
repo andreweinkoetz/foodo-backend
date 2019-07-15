@@ -290,10 +290,9 @@ const calculateNutriScore = async ( req, res ) => {
             const newScore = substitutor
                 .mapNutriScoreToABCDE( substitutor.calculateNutriScore( newValues, 'Recipe' ) );
 
-            logger.silly( `oldWeight: ${ oldWeight } newWeight: ${ newWeight }` );
 
             res.status( 200 ).send( {
-                oldValues, oldScore, newValues, newScore,
+                oldValues, oldScore, newValues, newScore, oldWeight, newWeight,
             } );
         } );
 };
