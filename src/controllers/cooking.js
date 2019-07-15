@@ -6,8 +6,8 @@ const SubstitutionModel = require( '../models/substitution' );
 const substitutor = require( '../algorithm/substitutor' );
 const logger = require( '../logger' ).getLogger( 'CookingController' );
 
-const totalWeightReducer = ( totalWeight, ingredient ) => totalWeight
-    + ( ingredient.amount * ingredient.unit.amount );
+const totalWeightReducer = ( totalWeight, iWrapper ) => totalWeight
+    + ( iWrapper.ingredient.amount * iWrapper.ingredient.unit.amount );
 
 
 const startCooking = async ( req, res ) => {
