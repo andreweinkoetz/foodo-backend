@@ -274,7 +274,7 @@ const calculateNutriScore = async ( req, res ) => {
                 );
 
             const oldWeight = r.personalizedRecipe.origRecipe.ingredients
-                .reduce( totalWeightReducer );
+                .reduce( totalWeightReducer, 0 );
 
             const oldScore = substitutor
                 .mapNutriScoreToABCDE( substitutor.calculateNutriScore( oldValues, 'Recipe' ) );
@@ -285,7 +285,7 @@ const calculateNutriScore = async ( req, res ) => {
                 );
 
             const newWeight = r.personalizedRecipe.ingredients
-                .reduce( totalWeightReducer );
+                .reduce( totalWeightReducer, 0 );
 
             const newScore = substitutor
                 .mapNutriScoreToABCDE( substitutor.calculateNutriScore( newValues, 'Recipe' ) );
