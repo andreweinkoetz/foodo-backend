@@ -264,25 +264,12 @@ const calculateNutriScore = async ( req, res ) => {
             },
         } )
         .then( ( r ) => {
-            r.personalizedRecipe.origRecipe.ingredients
-                .map( i => logger.silly( JSON.stringify( {
-                    name: i.ingredient.name.en,
-                    category: i.ingredient.category.name,
-                } ) ) );
-
             const oldValues = substitutor
                 .calculateNutritionValuesOfIngredientsList(
                     r.personalizedRecipe.origRecipe.ingredients,
                 );
             const oldScore = substitutor
                 .mapNutriScoreToABCDE( substitutor.calculateNutriScore( oldValues, 'Recipe' ) );
-
-
-            r.personalizedRecipe.ingredients
-                .map( i => logger.silly( JSON.stringify( {
-                    name: i.ingredient.name.en,
-                    category: i.ingredient.category.name,
-                } ) ) );
 
             const newValues = substitutor
                 .calculateNutritionValuesOfIngredientsList(
