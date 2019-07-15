@@ -237,6 +237,8 @@ const blockSubstitution = async ( req, res ) => {
 };
 
 const calculateNutriScore = async ( req, res ) => {
+    logger.debug( 'calculateNutriScore function triggered.' );
+
     const { userId } = req.body;
 
     const cookingEvent = await CookingModel
