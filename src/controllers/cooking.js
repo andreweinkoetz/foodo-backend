@@ -6,6 +6,10 @@ const SubstitutionModel = require( '../models/substitution' );
 const substitutor = require( '../algorithm/substitutor' );
 const logger = require( '../logger' ).getLogger( 'CookingController' );
 
+const totalWeightReducer = ( totalWeight, ingredient ) => totalWeight
+    + ( ingredient.amount * ingredient.unit.amount );
+
+
 const startCooking = async ( req, res ) => {
     const { userId, clientId, recipeName } = req.body;
 
@@ -113,7 +117,7 @@ const startCooking = async ( req, res ) => {
         },
     } );
 
-    res.status( 200 ).json( { possibleSubstitutes } );
+    return res.status( 200 ).json( { possibleSubstitutes } );
 };
 
 const getSubstitutes = ( req, res ) => {
@@ -268,17 +272,25 @@ const calculateNutriScore = async ( req, res ) => {
                 .calculateNutritionValuesOfIngredientsList(
                     r.personalizedRecipe.origRecipe.ingredients,
                 );
+
+            const oldWeight = r.personalizedRecipe.origRecipe.ingredients
+                .reduce( totalWeightReducer );
+
             const oldScore = substitutor
                 .mapNutriScoreToABCDE( substitutor.calculateNutriScore( oldValues, 'Recipe' ) );
 
             const newValues = substitutor
                 .calculateNutritionValuesOfIngredientsList(
                     r.personalizedRecipe.ingredients,
-
                 );
+
+            const newWeight = r.personalizedRecipe.ingredients
+                .reduce( totalWeightReducer );
 
             const newScore = substitutor
                 .mapNutriScoreToABCDE( substitutor.calculateNutriScore( newValues, 'Recipe' ) );
+
+            logger.silly( `oldWeight: ${ oldWeight } newWeight: ${ newWeight }` );
 
             res.status( 200 ).send( {
                 oldValues, oldScore, newValues, newScore,
