@@ -1,4 +1,5 @@
 const bcrypt = require( 'bcrypt' );
+const CACHE = require( './utilities/cache' );
 
 const { obtainToken, authorize } = require( '../middlewares' );
 const {
@@ -19,6 +20,8 @@ const changePassword = async ( req, res ) => {
 const register = async ( req, res ) => {
     const { body } = req;
     const { user } = body;
+    const lifestyle = CACHE.getLifeStylesLocally().find( l => l.name === 'None' );
+
     const missingProp = missingProperties( user, [ 'username', 'password', 'locale' ] );
     if ( missingProp ) {
         return sendBadRequestErrorMissingProperty( res, missingProp );
@@ -34,6 +37,7 @@ const register = async ( req, res ) => {
         username,
         locale,
         password: hashedPassword,
+        lifestyle: lifestyle._id,
     };
     return UserModel.create( registeringUser )
         .then( savedUser => res.status( 200 ).json( savedUser ) );
