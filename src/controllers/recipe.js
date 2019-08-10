@@ -1,3 +1,8 @@
+/**
+ * RecipeController
+ * handles all requests related to recipes
+ */
+
 /* eslint-disable no-param-reassign */
 const _ = require( 'lodash' );
 const RecipeModel = require( '../models/recipe' );
@@ -6,19 +11,42 @@ const IngredientModel = require( '../models/ingredient' );
 const SubstitutionModel = require( '../models/substitution' );
 const substitutor = require( '../algorithm/substitutor' );
 
+/**
+ * Returns all recipes in db.
+ * @param req
+ * @param res
+ * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+ */
 const getAllRecipes = ( req, res ) => RecipeModel
     .find( {} ).then( recipes => res.status( 200 ).json( recipes ) );
 
+/**
+ * Returns a single recipe identified by id.
+ * @param req
+ * @param res
+ * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+ */
 const getRecipeById = ( req, res ) => RecipeModel
     .findById( { _id: req.params.id } )
     .populate( { path: 'ingredients.ingredient' } )
     .then( recipe => res.status( 200 ).json( recipe ) );
 
+/**
+ * Creates a new recipe db entry.
+ * @param req
+ * @param res
+ */
 const insertRecipe = ( req, res ) => {
     const newRecipe = _.cloneDeep( req.body.recipe );
     RecipeModel.create( newRecipe ).then( recipe => res.status( 200 ).json( recipe ) );
 };
 
+/**
+ * Gets possible substitutes for ingredients in a recipe.
+ * Makes use of our algorithm sub-repo.
+ * @param req
+ * @param res
+ */
 const getSubstitutions = ( req, res ) => {
     const persRecipeId = req.params.id;
     PersonalizedRecipeModel.findById( persRecipeId )
@@ -78,6 +106,12 @@ const getSubstitutions = ( req, res ) => {
         } );
 };
 
+/**
+ * Function to block a substitution of an unhealthy ingredient.
+ * @param req
+ * @param res
+ * @returns {*}
+ */
 const blockSubstitution = ( req, res ) => {
     const persRecipeId = req.params.id;
     const origIngredientId = req.body.origId;
@@ -103,6 +137,11 @@ const blockSubstitution = ( req, res ) => {
     return res.status( 200 ).json( { msg: 'success' } );
 };
 
+/**
+ * Returns the recipes that a user already cooked.
+ * @param req
+ * @param res
+ */
 const getRecipesOfUser = ( req, res ) => {
     PersonalizedRecipeModel
         .find( { user: req.body.userId } )
@@ -110,6 +149,12 @@ const getRecipesOfUser = ( req, res ) => {
         .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
 };
 
+/**
+ * Returns a single recipe of a user identified by id.
+ * @param req
+ * @param res
+ * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+ */
 const getSingleRecipeOfUser = ( req, res ) => PersonalizedRecipeModel
     .findOne( { 'personalizedRecipe.origRecipe': req.params.id, user: req.body.userId } )
     .populate( 'personalizedRecipe.origRecipe' )
@@ -135,7 +180,11 @@ const getSingleRecipeOfUser = ( req, res ) => PersonalizedRecipeModel
     .populate( 'personalizedRecipe.blockedSubstitutions.blockedSubs' )
     .then( personalizedRecipe => res.status( 200 ).json( personalizedRecipe ) );
 
-
+/**
+ * Creates a new recipe db entry for a user.
+ * @param req
+ * @param res
+ */
 const insertPersonalizedRecipe = ( req, res ) => {
     const personalizedRecipe = {
         user: req.body.userId,
@@ -171,6 +220,11 @@ const insertPersonalizedRecipe = ( req, res ) => {
         } );
 };
 
+/**
+ * Updates a recipe db entry of a user.
+ * @param req
+ * @param res
+ */
 const updatePersonalizedRecipe = ( req, res ) => {
     const client = req.body.clientId;
     const { personalizedRecipe } = req.body;
@@ -204,12 +258,24 @@ const updatePersonalizedRecipe = ( req, res ) => {
         .then( popPersRecipe => res.status( 200 ).json( popPersRecipe ) );
 };
 
+/**
+ * Checks if a substitution is already part
+ * of the original recipe.
+ * @param persRecipe
+ * @param substituteId
+ * @returns {T | undefined}
+ */
 const checkDoubleIngredientEntries = ( persRecipe, substituteId ) => {
     const foundIngredient = persRecipe.personalizedRecipe.ingredients
         .find( ingredient => ingredient.ingredient._id.toString() === substituteId );
     return foundIngredient;
 };
 
+/**
+ * Function to process all steps necessary to revert a previous substitution.
+ * @param req
+ * @param res
+ */
 const revertSubstitution = ( req, res ) => {
     const { historyId } = req.body;
     SubstitutionModel.findById( historyId )
@@ -280,6 +346,11 @@ const revertSubstitution = ( req, res ) => {
         } );
 };
 
+/**
+ * Function to replace an unhealthy ingredient with a healthier substitute.
+ * @param req
+ * @param res
+ */
 const substituteIngredient = ( req, res ) => {
     const persRecipeId = req.body._id;
     const { substituteId, originalId, amount } = req.body;

@@ -1,13 +1,22 @@
+/**
+ * IngredientModel
+ * builds the ingredient db collection with mongoose.
+ */
+
 const mongoose = require( 'mongoose' );
 
 const { Schema } = mongoose;
 
+/**
+ * Schema for an ingredient.
+ * @type {*|Mongoose.Schema}
+ */
 const IngredientSchema = new Schema( {
-    foodId: {
+    foodId: { // legacy info of original data source
         type: String,
         required: true,
     },
-    name: {
+    name: { // name of ingredient en/de
         en: {
             type: String,
             required: true,
@@ -17,8 +26,8 @@ const IngredientSchema = new Schema( {
             required: true,
         },
     },
-    category: { type: Schema.Types.ObjectId, ref: 'Category' },
-    elements: {
+    category: { type: Schema.Types.ObjectId, ref: 'Category' }, // ref. to category
+    elements: { // ingredient elements from original data source
         Cholesterol: {
             type: Number,
             required: true,
@@ -156,7 +165,7 @@ const IngredientSchema = new Schema( {
             required: true,
         },
     },
-    unit:
+    unit: // the unit of this ingredient (e.g. 100 gramm)
         {
             name: {
                 type: String,
@@ -168,8 +177,8 @@ const IngredientSchema = new Schema( {
                 required: true,
             },
         },
-    notForAllergies: [ { type: Schema.Types.ObjectId, ref: 'Allergy' } ],
-    notForLifestyles: [ { type: Schema.Types.ObjectId, ref: 'Lifestyle' } ],
+    notForAllergies: [ { type: Schema.Types.ObjectId, ref: 'Allergy' } ], // ref. to allergies
+    notForLifestyles: [ { type: Schema.Types.ObjectId, ref: 'Lifestyle' } ], // ref. to lifestyles
 
 }, { collection: 'ingredient' } );
 

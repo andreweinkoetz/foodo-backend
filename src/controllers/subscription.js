@@ -1,7 +1,16 @@
+/**
+ * SubscriptionController
+ * handles all requests regarding the PayPal subscription process.
+ */
 const logger = require( '../logger' ).getLogger( 'SubscriptionController' );
 const SubscriptionModel = require( '../models/subscription' );
 const UserModel = require( '../models/user' );
 
+/**
+ * Create own subscription document in db.
+ * @param req
+ * @param res
+ */
 const createSubscription = ( req, res ) => {
     logger.debug( 'Subscription create process started.' );
 
@@ -16,6 +25,12 @@ const createSubscription = ( req, res ) => {
     res.status( 200 ).json( { msg: 'nice' } );
 };
 
+/**
+ * Activate the subscription of a user.
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
 const subscribeUser = async ( req, res ) => {
     logger.debug( 'Subscription add user process started.' );
     const { subscriptionId, userId } = req.body;
@@ -31,6 +46,12 @@ const subscribeUser = async ( req, res ) => {
     return res.sendStatus( 200 );
 };
 
+/**
+ * Deactivate the subscription of a user.
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
 const cancelSubscription = async ( req, res ) => {
     logger.debug( 'Subscription cancel process started.' );
     const paypalSubscriptionId = req.body.resource.id;

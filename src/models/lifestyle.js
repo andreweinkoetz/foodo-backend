@@ -1,7 +1,16 @@
+/**
+ * LifestyleModel
+ * builds the lifestyles db collection with mongoose.
+ */
+
 const mongoose = require( 'mongoose' );
 
 const { Schema } = mongoose;
 
+/**
+ * Schema for lifestyles.
+ * @type {*|Mongoose.Schema}
+ */
 const LifestyleSchema = new Schema( {
     name: {
         type: String,

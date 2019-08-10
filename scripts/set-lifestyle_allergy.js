@@ -5,18 +5,30 @@
 *                 Wipes all allergies of ingredients             *
 *                                                                *
  */
+
 require( 'dotenv' ).config();
 const mongoose = require( 'mongoose' );
 const IngredientModel = require( '../src/models/ingredient' );
-const CategoryModel = require( '../src/models/category' );
 const LifestyleModel = require( '../src/models/lifestyle' );
 const AllergyModel = require( '../src/models/allergy' );
 
+/**
+ * Adds the lifestyle to the ingredient.
+ * @param ingredient
+ * @param lifestyles
+ * @returns {Promise<void>}
+ */
 const addLifeStyleToIngredient = async ( ingredient, ...lifestyles ) => {
     await IngredientModel
         .findOneAndUpdate( { _id: ingredient._id }, { notForLifestyles: lifestyles } ).exec();
 };
 
+/**
+ * Adds the lifestyle to the ingredient.
+ * @param ingredient
+ * @param allergy
+ * @returns {Promise<void>}
+ */
 const addAllergyToIngredient = async ( ingredient, allergy ) => {
     if ( allergy ) {
         await IngredientModel
@@ -33,11 +45,14 @@ const addAllergyToIngredient = async ( ingredient, allergy ) => {
     }
 };
 
-/*
-0 - None
-1 - Vegetarian
-2 - Low carb
-3 - Vegan
+/**
+ * Checks which category matches lifestyle.
+ * 0 - None
+ * 1 - Vegetarian
+ * 2 - Low carb
+ * 3 - Vegan
+ * @param ingredient
+ * @param lifestyles
  */
 const checkCategoryForLifestyle = ( ingredient, lifestyles ) => {
     if ( ingredient.category ) {
@@ -75,10 +90,13 @@ const checkCategoryForLifestyle = ( ingredient, lifestyles ) => {
     }
 };
 
-/*
-0 - Gluten
-1 - Lactose
-2 - Fructose
+/**
+ * Checks which category matches allergy.
+ * 0 - Gluten
+ * 1 - Lactose
+ * 2 - Fructose
+ * @param ingredient
+ * @param allergies
  */
 const checkCategoryForAllergies = ( ingredient, allergies ) => {
     if ( ingredient.category ) {
@@ -113,6 +131,7 @@ const checkCategoryForAllergies = ( ingredient, allergies ) => {
     }
 };
 
+// Bulk update edited ingredients.
 mongoose
     .connect( process.env.MONGODB_URI, { useNewUrlParser: true, useFindAndModify: false } )
     .then( async () => {

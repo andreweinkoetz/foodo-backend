@@ -48,12 +48,20 @@ const sendBadRequestErrorUsernameTaken = ( res, username ) => res.status( 400 )
         message: `The ${ username } is already taken`,
     } );
 
+/**
+ * @param res
+ * @returns {*}
+ */
 const sendBadRequestPasswordEmpty = res => res.status( 404 )
     .json( {
         error: 'Bad Request',
         message: 'The password-field must be set.',
     } );
 
+/**
+ * @param res
+ * @param err
+ */
 const generateAndSendErrorMessage = ( res, err ) => {
     if ( err.message === USER_NOT_FOUND ) {
         res.status( 404 ).json( {

@@ -1,26 +1,37 @@
+/**
+ * RecipeModel
+ * builds the standard recipe db collection with mongoose.
+ */
+
 const mongoose = require( 'mongoose' );
 
 const { Schema } = mongoose;
 
+/**
+ * Schema for a standard recipe.
+ * Standard recipes are created by administrative users.
+ * *For future work: Let users create their own recipes.*
+ * @type {*|Mongoose.Schema}
+ */
 const RecipeSchema = new Schema( {
-    name: {
+    name: { // name of recipe
         type: String,
         required: true,
         unique: true,
     },
-    preparationTime: {
+    preparationTime: { // prep. time in minutes
         type: Number,
         required: true,
     },
-    meal: {
+    meal: { // e.g. lunch, breakfast, etc.
         type: String,
         required: true,
     },
-    difficulty: {
+    difficulty: { // how difficult it is to cook this dish.
         type: String,
         enum: [ 'Easy', 'Medium', 'Difficult' ],
     },
-    ingredients: [ {
+    ingredients: [ { // which ingredients are part of this recipe.
         ingredient: {
             type: Schema.Types.ObjectId,
             ref: 'Ingredient',
@@ -30,10 +41,10 @@ const RecipeSchema = new Schema( {
             required: true,
         },
     } ],
-    directions: {
+    directions: { // textual description of how to cook this recipe.
         type: [ String ],
     },
-    servings: [
+    servings: [ // serving sizes of recipe.
         {
             name: {
                 type: String,
@@ -44,7 +55,7 @@ const RecipeSchema = new Schema( {
                 required: true,
             },
         } ],
-    imgUrl: {
+    imgUrl: { // image of recipe (stock)
         type: String,
         default: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2000px-No_image_available.svg.png',
     },

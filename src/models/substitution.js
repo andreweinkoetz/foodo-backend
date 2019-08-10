@@ -1,11 +1,22 @@
+/**
+ * SubstitutionModel
+ * builds the substitution db collection with mongoose.
+ */
+
 const mongoose = require( 'mongoose' );
 
 const { Schema } = mongoose;
 
+/**
+ * Schema for substitutions
+ * Used to make Cooking process via Alexa permament.
+ * Required because Alexa can not handle any state (lambda function)
+ * @type {*|Mongoose.Schema}
+ */
 const SubstitutionSchema = new Schema( {
-    persRecipe: { type: Schema.Types.ObjectId, ref: 'PersonalizedRecipe' },
-    original: { type: Schema.Types.ObjectId, ref: 'Ingredient' },
-    substitute: { type: Schema.Types.ObjectId, ref: 'Ingredient' },
+    persRecipe: { type: Schema.Types.ObjectId, ref: 'PersonalizedRecipe' }, // ref. to recipe
+    original: { type: Schema.Types.ObjectId, ref: 'Ingredient' }, // ref. to ingredient to be replaced
+    substitute: { type: Schema.Types.ObjectId, ref: 'Ingredient' }, // ref. to replacing ingredient
     amount: { type: Number, required: true },
 }, { collection: 'substitution' } );
 

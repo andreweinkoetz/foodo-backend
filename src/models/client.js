@@ -1,27 +1,37 @@
+/**
+ * ClientModel
+ * builds the client db collection with mongoose.
+ */
+
 const mongoose = require( 'mongoose' );
 
 const { Schema } = mongoose;
 
+/**
+ * Schema for clients.
+ * Used to separate between alexa and react application within oauth2-process.
+ * @type {*|Mongoose.Schema}
+ */
 const ClientSchema = new Schema( {
-    id: {
+    id: { // unique identifier for client
         type: String,
         required: true,
         unique: true,
     },
-    clientId: {
+    clientId: { // same as id for compatibility
         type: String,
         required: true,
         unique: true,
     },
-    clientSecret: {
+    clientSecret: { // "password" for client
         type: String,
         required: true,
     },
-    grants: {
+    grants: { // grant types accepted for this client
         type: [ String ],
         required: true,
     },
-    redirectUris: {
+    redirectUris: { // required by oauth2 process
         type: [ String ],
     },
 }, { collection: 'client' } );

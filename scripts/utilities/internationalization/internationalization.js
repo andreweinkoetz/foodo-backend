@@ -20,12 +20,13 @@ const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID;
 // Instantiates a client
 const translate = new Translate( { projectId } );
 
-// select a locales as a target language
+// select a locale as a target language
 const LOCALES = [
     'en',
     'de',
 ];
 
+// start translation process with Google
 const translateTextTo = async ( text, from, to ) => {
     if ( !LOCALES.includes( to ) || !LOCALES.includes( from ) ) {
         throw Error( 'target/base language not supported for Foodo' );

@@ -15,7 +15,7 @@ const int = require('./utilities/internationalization/internationalization');
 require('dotenv').config();
 
 // Prepare input data
-const rawData = fs.readFileSync( '/Users/andre/Documents/workspace/recipes.json' );
+const rawData = fs.readFileSync( 'PATH/recipes.json' );
 const recipes = JSON.parse( rawData );
 
 // Initialize result array
@@ -89,8 +89,8 @@ recipes.map( ( r ) => {
     } );
 } );
 
-// Writing to file temporarily.
-//fs.writeFileSync("/Users/andre/Documents/workspace/import.log", JSON.stringify(ingredientArray));
+// Uncomment to write to file temporarily.
+// fs.writeFileSync("PATH/import.log", JSON.stringify(ingredientArray));
 
 mongoose.connect( process.env.MONGODB_URI, { useNewUrlParser: true } ).then( () => {
     mongoose.connection.db.dropCollection('ingredient', (err, result) => console.log(err, result));

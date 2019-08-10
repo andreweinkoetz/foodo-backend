@@ -1,3 +1,6 @@
+/**
+ *  Caching of database collections which are rarely updated.
+ */
 const GoalModel = require( '../../models/goal' );
 const LifestyleModel = require( '../../models/lifestyle' );
 const AllergyModel = require( '../../models/allergy' );
@@ -7,6 +10,10 @@ const logger = require( '../../logger' ).getLogger( 'CACHE' );
 
 const CACHE = {};
 
+/**
+ * Performs actual db queries and inits cache.
+ * @returns {Promise<void>}
+ */
 const initCache = async () => {
     logger.debug( 'Initializing Cache...' );
     CACHE.GOALS = await GoalModel.find().exec();
@@ -32,6 +39,7 @@ const initCache = async () => {
     logger.debug( `# of ingredients loaded: ${ CACHE.INGREDIENT_BASE.length }` );
 };
 
+// Reply to single queries asking for cached elements.
 const getGoals = ( req, res ) => res.status( 200 ).json( CACHE.GOALS );
 const getAllergies = ( req, res ) => res.status( 200 ).json( CACHE.ALLERGIES );
 const getCategories = ( req, res ) => res.status( 200 ).json( CACHE.CATEGORIES );

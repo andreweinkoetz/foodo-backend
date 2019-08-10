@@ -1,27 +1,38 @@
+/**
+ * PersonalizedRecipeModel
+ * builds the persRecipe db collection with mongoose.
+ */
+
 const mongoose = require( 'mongoose' );
 
 const { Schema } = mongoose;
 
+/**
+ * Schema for personalized recipes.
+ * A recipe is transformed into a personalized recipe once a user selects it.
+ * Used to keep track of the personal preferences and progress of a user.
+ * @type {*|Mongoose.Schema}
+ */
 const PersonalizedRecipeSchema = new Schema( {
-    user: {
+    user: { // ref. to user
         type: Schema.Types.ObjectId,
         ref: 'User',
     },
-    client: {
+    client: { // ref. to client (via which app was it created)
         type: Schema.Types.ObjectId,
         ref: 'Client',
     },
     personalizedRecipe: {
-        origRecipe: {
+        origRecipe: { // ref. to standard recipe.
             type: Schema.Types.ObjectId,
             ref: 'Recipe',
         },
-        ingredients: [ {
-            ingredient: {
+        ingredients: [ { // CURRENT ingredients in this recipe
+            ingredient: { // subsitute ingredient
                 type: Schema.Types.ObjectId,
                 ref: 'Ingredient',
             },
-            substitutionFor: {
+            substitutionFor: { // ref. to ingredient in standard recipe
                 type: Schema.Types.ObjectId,
                 ref: 'Substitution',
             },
@@ -30,7 +41,7 @@ const PersonalizedRecipeSchema = new Schema( {
                 required: true,
             },
         } ],
-        blockedSubstitutions: [
+        blockedSubstitutions: [ // original ingredients which shall not be replaced.
             {
                 type: Schema.Types.ObjectId,
                 ref: 'Ingredient',

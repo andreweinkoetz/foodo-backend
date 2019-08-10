@@ -1,7 +1,16 @@
+/**
+ * AllergyModel
+ * builds the allergy db collection with mongoose.
+ */
+
 const mongoose = require( 'mongoose' );
 
 const { Schema } = mongoose;
 
+/**
+ * Schema for allergies
+ * @type {*|Mongoose.Schema}
+ */
 const AllergySchema = new Schema( {
     name: {
         type: String,

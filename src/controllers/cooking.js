@@ -1,3 +1,8 @@
+/**
+ * CookingController
+ * handles all requests related to cooking intents of Alexa
+ */
+
 /* eslint-disable no-unused-vars,no-param-reassign */
 const CookingModel = require( '../models/cooking' );
 const RecipeModel = require( '../models/recipe' );
@@ -6,10 +11,22 @@ const SubstitutionModel = require( '../models/substitution' );
 const substitutor = require( '../algorithm/substitutor' );
 const logger = require( '../logger' ).getLogger( 'CookingController' );
 
+/**
+ * Reducer function to be passed in to calculate total weight.
+ * @param totalWeight
+ * @param iWrapper
+ * @returns {*}
+ */
 const totalWeightReducer = ( totalWeight, iWrapper ) => totalWeight
     + ( iWrapper.amount * iWrapper.ingredient.unit.amount );
 
-
+/**
+ * Start of cooking with Alexa skill.
+ * As this is invoked via lambda function, it has to save state temp. in db.
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
 const startCooking = async ( req, res ) => {
     const { userId, clientId, recipeName } = req.body;
 
@@ -120,6 +137,12 @@ const startCooking = async ( req, res ) => {
     return res.status( 200 ).json( { possibleSubstitutes } );
 };
 
+/**
+ * Function to retrieve the possible substitutes
+ * for an ingredient.
+ * @param req
+ * @param res
+ */
 const getSubstitutes = ( req, res ) => {
     const { userId } = req.body;
 
@@ -132,12 +155,26 @@ const getSubstitutes = ( req, res ) => {
         } );
 };
 
+/**
+ * Checks if a substitution is already part
+ * of the original recipe.
+ * @param persRecipe
+ * @param substituteId
+ * @returns {ingredient | undefined}
+ */
 const checkDoubleIngredientEntries = ( persRecipe, substituteId ) => {
     const foundIngredient = persRecipe.personalizedRecipe.ingredients
         .find( ingredient => ingredient.ingredient.toString() === substituteId );
     return foundIngredient;
 };
 
+/**
+ * Function to process a substitution of an unhealthy ingredient.
+ * @param persRecipe
+ * @param substitute
+ * @param original
+ * @param amount
+ */
 const substituteIngredient = ( persRecipe, substitute, original, amount ) => {
     const doubleIngredient = checkDoubleIngredientEntries( persRecipe, substitute._id.toString() );
     SubstitutionModel
@@ -169,6 +206,12 @@ const substituteIngredient = ( persRecipe, substitute, original, amount ) => {
         } );
 };
 
+/**
+ * Process the Substitute intent of the Alexa skill.
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
 const substituteOriginal = async ( req, res ) => {
     logger.silly( 'Entering substitute original function.' );
 
@@ -217,6 +260,13 @@ const substituteOriginal = async ( req, res ) => {
     );
 };
 
+/**
+ * Function to block a substitution of an unhealthy ingredient.
+ * Invoked only by Alexa skill.
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
 const blockSubstitution = async ( req, res ) => {
     const { userId } = req.body;
 
@@ -240,6 +290,13 @@ const blockSubstitution = async ( req, res ) => {
     return res.status( 200 ).json( { msg: 'Success!' } );
 };
 
+/**
+ * Function to retrieve the nutri score.
+ * Invokes our algorithm sub-repository.
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 const calculateNutriScore = async ( req, res ) => {
     logger.debug( 'calculateNutriScore function triggered.' );
 

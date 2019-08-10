@@ -1,6 +1,11 @@
+/**
+ * AuthController
+ * handles all auth related request of api.
+ */
 const bcrypt = require( 'bcrypt' );
 const CACHE = require( './utilities/cache' );
 
+// using oauth2 methods from middleware
 const { obtainToken, authorize } = require( '../middlewares' );
 const {
     missingProperties,
@@ -9,6 +14,12 @@ const {
 } = require( './utilities/error' );
 const UserModel = require( '../models/user' );
 
+/**
+ * Function to change password of user.
+ * @param req
+ * @param res
+ * @returns {Promise<Promise|*|PromiseLike<T>|Promise<T>>}
+ */
 const changePassword = async ( req, res ) => {
     const { password, userId } = req.body;
     const hashedPassword = bcrypt.hashSync( password, 8 );
@@ -17,6 +28,12 @@ const changePassword = async ( req, res ) => {
         .then( () => res.status( 200 ).json( { msg: 'Password updated successfully' } ) );
 };
 
+/**
+ * Function to register a new user.
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
 const register = async ( req, res ) => {
     const { body } = req;
     const { user } = body;
