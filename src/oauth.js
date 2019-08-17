@@ -1,3 +1,8 @@
+/**
+ * oAuth2 method implementation as specified in
+ * https://oauth2-server.readthedocs.io/en/latest/index.html
+ */
+
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
@@ -11,6 +16,12 @@ const CodeModel = require( './models/code' );
 
 const logger = require( './logger' ).getLogger( 'oauth' );
 
+/**
+ * Helper method to convert the token into a
+ * Amazon specific format to get accepted by Alexa.
+ * @param token
+ * @returns {Promise<*>}
+ */
 const convertTokenAlexa = async ( token ) => {
     logger.debug( 'Converting token for Alexa ...' );
     const alexaToken = lodash.cloneDeep( token );
@@ -26,6 +37,13 @@ const convertTokenAlexa = async ( token ) => {
     return alexaToken;
 };
 
+/**
+ * oAuth2 getUser function.
+ * Gets user object from db & validates password.
+ * @param username
+ * @param password
+ * @returns {Promise<undefined>}
+ */
 const getUser = async ( username, password ) => {
     logger.debug( 'getUser-function called' );
 
@@ -41,6 +59,13 @@ const getUser = async ( username, password ) => {
     return validPassword ? user : undefined;
 };
 
+/**
+ * oAuth2 getClient function
+ * Retrieves client from db and validates secret.
+ * @param clientId
+ * @param clientSecret
+ * @returns {Promise<undefined>}
+ */
 const getClient = async ( clientId, clientSecret ) => {
     logger.debug( 'getClient-function called' );
     logger.debug( ` Used clientId: ${ clientId }` );
@@ -52,6 +77,14 @@ const getClient = async ( clientId, clientSecret ) => {
     return client;
 };
 
+/**
+ * oAuth2 saveToken function
+ * Gets called by oauth-server module to store the generated token in db.
+ * @param token
+ * @param client
+ * @param user
+ * @returns {Promise<*>}
+ */
 const saveToken = async ( token, client, user ) => {
     logger.debug( 'saveToken-function called' );
 
@@ -85,6 +118,13 @@ const saveToken = async ( token, client, user ) => {
     return returnToken;
 };
 
+/**
+ * oAuth2 getAccessToken function
+ * Gets called by oauth-server to find access token in db.
+ * Is used during checkAuthentication-flow in middleware
+ * @param accessToken
+ * @returns {Promise<void>}
+ */
 const getAccessToken = async ( accessToken ) => {
     logger.debug( 'getAccessToken called' );
     logger.silly( `Token:${ JSON.stringify( accessToken ) }` );
@@ -95,6 +135,12 @@ const getAccessToken = async ( accessToken ) => {
     return token;
 };
 
+/**
+ * oAuth2 getAuthorizationCode function
+ * Gets called by oauth-server (only authcode grant type)
+ * @param authorizationCode
+ * @returns {Promise<void>}
+ */
 const getAuthorizationCode = async ( authorizationCode ) => {
     logger.debug( 'getAuthorizationCode called' );
 
@@ -103,6 +149,15 @@ const getAuthorizationCode = async ( authorizationCode ) => {
     return code;
 };
 
+/**
+ * oAuth2 saveAuthorizationCode function
+ * Gets called by oauth-server (only authcode grant type)
+ * to save generated authcode to db.
+ * @param code
+ * @param client
+ * @param user
+ * @returns {Promise<*>}
+ */
 const saveAuthorizationCode = async ( code, client, user ) => {
     logger.debug( 'saveAuthorizationCode called' );
 
@@ -115,6 +170,12 @@ const saveAuthorizationCode = async ( code, client, user ) => {
     return code;
 };
 
+/**
+ * oAuth2 getRefreshToken function
+ * Gets called by oauth-server (only refresh-token grant type)
+ * @param refreshToken
+ * @returns {Promise<void>}
+ */
 const getRefreshToken = async ( refreshToken ) => {
     logger.debug( 'getRefreshToken called' );
 
@@ -124,6 +185,12 @@ const getRefreshToken = async ( refreshToken ) => {
     return token;
 };
 
+/**
+ * oAuth2 revokeAuthorizationCode function
+ * Gets called by oauth-server (only authcode grant type)
+ * @param code
+ * @returns {Promise<boolean>}
+ */
 const revokeAuthorizationCode = async ( code ) => {
     logger.debug( 'revokeAuthorizationCode called' );
 
@@ -134,6 +201,12 @@ const revokeAuthorizationCode = async ( code ) => {
     return !!removedCode;
 };
 
+/**
+ * oAuth2 revokeToken function
+ * Used to revoke a valid access token.
+ * @param token
+ * @returns {Promise<boolean>}
+ */
 const revokeToken = async ( token ) => {
     logger.debug( 'RevokeToken called' );
 

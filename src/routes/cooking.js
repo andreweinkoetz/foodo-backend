@@ -1,3 +1,8 @@
+/**
+ * Route for cooking with Alexa.
+ * Parent route: /cooking
+ */
+
 const express = require( 'express' );
 
 const router = express.Router();

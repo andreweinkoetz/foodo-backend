@@ -1,3 +1,8 @@
+/**
+ * ENTRY FILE FOR EXPRESS APP.
+ * This file gets called when running "npm start" command.
+ */
+
 /* eslint-disable no-console */
 const dotenv = require( 'dotenv' );
 const mongoose = require( 'mongoose' );
@@ -17,6 +22,7 @@ if ( !process.env.IS_PROD ) {
     dotenv.config();
 }
 
+// SECTION: Config mongoose
 mongoose.set( 'useCreateIndex', true );
 mongoose.set( 'useFindAndModify', false );
 
@@ -30,6 +36,12 @@ app.use( '/cooking', cooking );
 app.use( '', profile );
 app.use( '/subscription', subscription );
 
+/**
+ * Start of application
+ * 1. open db connection
+ * 2. initialize manual caching of large collections
+ * 3. start web server process
+ */
 mongoose.connect( process.env.MONGODB_URI, { useNewUrlParser: true } ).then( () => {
     // Initialize cache
     cache.initCache().then( () => {

@@ -7,6 +7,7 @@ const REFRESH_TOKEN_EXPIRED = 'Invalid grant: refresh token has expired';
 
 
 /**
+ * Request misses specific property
  * @param {object} body
  * @param {string} property
  * @returns {boolean}
@@ -15,6 +16,7 @@ const missesProperty = ( body, property ) => !Object.prototype
     .hasOwnProperty.call( body, property );
 
 /**
+ * Request misses multiple properties
  * @param {object} body
  * @param {Array} property
  * @returns {boolean}
@@ -27,6 +29,8 @@ const missingProperties = ( body, properties ) => {
 };
 
 /**
+ * Request misses specific property
+ * Creates a human-readable error message.
  * @param {object} res
  * @param {string} property
  * @returns {json}
@@ -38,6 +42,8 @@ const sendBadRequestErrorMissingProperty = ( res, property ) => res.status( 400 
     } );
 
 /**
+ * User tried to register an existing username.
+ * Creates a human-readable error message.
  * @param {object} res
  * @param {string} username
  * @returns {json}
@@ -49,6 +55,8 @@ const sendBadRequestErrorUsernameTaken = ( res, username ) => res.status( 400 )
     } );
 
 /**
+ * User tried to register without a password.
+ * Creates a human-readable error message.
  * @param res
  * @returns {*}
  */
@@ -59,6 +67,7 @@ const sendBadRequestPasswordEmpty = res => res.status( 404 )
     } );
 
 /**
+ * Sends the matching error message.
  * @param res
  * @param err
  */

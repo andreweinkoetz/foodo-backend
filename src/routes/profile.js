@@ -1,3 +1,8 @@
+/**
+ * Route for profile-related tasks.
+ * Parent route: /
+ */
+
 const express = require( 'express' );
 const cache = require( '../controllers/utilities/cache' );
 

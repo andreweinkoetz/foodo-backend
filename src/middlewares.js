@@ -1,3 +1,8 @@
+/**
+ * File for configuring all middlewares
+ * including oauth, parsing and cors.
+ */
+
 /* eslint-disable no-param-reassign */
 const express = require( 'express' );
 const bodyParser = require( 'body-parser' );
@@ -24,6 +29,12 @@ app.use( bodyParser.urlencoded( { extended: false } ) );
 app.use( cors() );
 
 // SECTION: OAuth functions
+/**
+ * Method to handle access token requests.
+ * @param req
+ * @param res
+ * @returns {Promise<T>}
+ */
 const obtainToken = ( req, res ) => {
     const request = new Request( req );
     const response = new Response( res );
@@ -40,6 +51,12 @@ const obtainToken = ( req, res ) => {
         } );
 };
 
+/**
+ * Method used to handle authorization requests.
+ * @param req
+ * @param res
+ * @returns {Promise<T>}
+ */
 const authorize = ( req, res ) => {
     const request = new Request( req );
     const response = new Response( res );
@@ -50,6 +67,14 @@ const authorize = ( req, res ) => {
     } );
 };
 
+/**
+ * Checks if the token in request is valid.
+ * throws if it is invalid.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<T>}
+ */
 const checkAuthentication = ( req, res, next ) => {
     logger.debug( `Checking authentication for token: ${ JSON.stringify( req.headers ) }` );
 

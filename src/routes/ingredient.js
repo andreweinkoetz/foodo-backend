@@ -1,3 +1,8 @@
+/**
+ * Route for ingredient-related purposes.
+ * Parent route: /ingredients
+ */
+
 const express = require( 'express' );
 
 const router = express.Router();

@@ -1,3 +1,8 @@
+/**
+ * Route for PayPal subscribing process.
+ * Parent route: /subscription
+ */
+
 const express = require( 'express' );
 
 const router = express.Router();

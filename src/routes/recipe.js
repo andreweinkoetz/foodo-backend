@@ -1,3 +1,8 @@
+/**
+ * Route for recipe-related purposes.
+ * Parent route: /recipe
+ */
+
 const express = require( 'express' );
 
 const router = express.Router();
