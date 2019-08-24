@@ -22,7 +22,7 @@ const createSubscription = ( req, res ) => {
         active: true,
     } );
 
-    res.status( 200 ).json( { msg: 'nice' } );
+    res.status( 200 ).json( { msg: 'Successfully created subscription' } );
 };
 
 /**

@@ -9,7 +9,7 @@ const { Schema } = mongoose;
 
 /**
  * Schema for substitutions
- * Used to make Cooking process via Alexa permament.
+ * Used to make Cooking process via Alexa permanent.
  * Required because Alexa can not handle any state (lambda function)
  * @type {*|Mongoose.Schema}
  */
