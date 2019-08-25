@@ -109,7 +109,7 @@ This endpoint hosts all cooking related methods used by Alexa.
 | **/nutriscore** (GET)  |  -  |  `{ oldValues, oldScore, newValues, newScore, oldWeight, newWeight }` calculates all values regarding improvement of recipe (nutriscore, kj, weight)   |
 
 ## /subscription
-This endpoint hosts all cooking related methods used by Alexa.
+This endpoint hosts all PayPal subscription related methods.
 
 | Endpoint (METHOD)        | Req-Body     | Response  |
 | :------------------------------- | :----: | :-----:|
